@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Pathfinder;
 using UnityEngine;
-using Vector2 = System.Numerics.Vector2;
 
-namespace Pathfinder
+namespace AIP1_Laure.AI.Pathfinding
 {
-    public class DepthFirstPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode<UnityEngine.Vector2Int>, INode, new()
+    public class DepthFirstPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode<Vector2Int>, INode, new()
     {
         public DepthFirstPathfinder(Graph<NodeType> graph)
         {
@@ -47,7 +47,7 @@ namespace Pathfinder
 
         protected override int MoveToNeighborCost(NodeType A, NodeType b)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         protected override bool NodesEquals(NodeType A, NodeType B)

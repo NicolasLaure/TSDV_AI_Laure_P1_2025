@@ -1,0 +1,17 @@
+{
+    "name": "View_Assembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:779baf206e6cdbe498040dcfbcec620c",
+        "GUID:c99d542ff97917648a1e048c7b482ceb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

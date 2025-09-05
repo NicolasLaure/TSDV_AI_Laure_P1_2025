@@ -1,12 +1,13 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using AIP1_Laure.AI.Pathfinding;
+using Pathfinder;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Pathfinder
+namespace AIP1_Laure.View.Pathfinding
 {
-    public class Traveler : MonoBehaviour
+    public class TravelerView : MonoBehaviour
     {
         [SerializeField] private GameObject destinationObject;
 
