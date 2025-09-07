@@ -33,17 +33,26 @@ namespace Pathfinder
                 //!LeftLimit
                 if (i % width != 0)
                     neighbours.Add(nodes[i - 1]);
+                else
+                    neighbours.Add(nodes[i + width - 1]);
+
                 //!RightLimit
                 if ((i + 1) % width != 0)
                     neighbours.Add(nodes[i + 1]);
+                else
+                    neighbours.Add(nodes[i - width + 1]);
 
                 //!TopLimit
                 if (MathF.Floor(i / width) > 0)
                     neighbours.Add(nodes[i - width]);
+                else
+                    neighbours.Add(nodes[i + width * (height - 1)]);
 
                 //!BottomLimit
                 if (MathF.Floor(i / width) + 1 < height)
                     neighbours.Add(nodes[i + width]);
+                else
+                    neighbours.Add(nodes[i - width * (height - 1)]);
 
                 nodeToNeighbours.Add(nodes[i], neighbours);
             }
