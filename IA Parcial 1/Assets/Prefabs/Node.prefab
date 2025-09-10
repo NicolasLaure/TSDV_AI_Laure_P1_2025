@@ -124,6 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clearMat: {fileID: 2100000, guid: 9ea54dfef1f9cd74f98e80b1a67808b1, type: 2}
   blockedMat: {fileID: 2100000, guid: 207daef5f56d7ee4e9da789e1f099235, type: 2}
+  pathMat: {fileID: 2100000, guid: 8eb23369ede5fd94aacd5638c33bf8c0, type: 2}
   text: {fileID: 6173731760892651596}
 --- !u!1 &8310113698882428420
 GameObject:

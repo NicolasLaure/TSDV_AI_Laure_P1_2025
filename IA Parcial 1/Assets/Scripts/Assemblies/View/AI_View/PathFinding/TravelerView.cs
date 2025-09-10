@@ -10,7 +10,7 @@ namespace AIP1_Laure.View.Pathfinding
     public class TravelerView : MonoBehaviour
     {
         [SerializeField] private GameObject destinationObject;
-
+        [SerializeField] private float sleepDuration = 0.1f;
         public GridView gridView;
 
         //private DepthFirstPathfinder<Node<Vector2Int>> _pathfinder;
@@ -29,14 +29,17 @@ namespace AIP1_Laure.View.Pathfinding
 
         public IEnumerator Move(List<Node<Vector2Int>> path)
         {
-            yield return new WaitForSeconds(1.0f);
+            gridView.PaintPath(path, true);
+            yield return new WaitForSeconds(sleepDuration);
             foreach (Node<Vector2Int> node in path)
             {
                 Vector3 travelerPos = gridView.ToGridAligned(node.GetCoordinate());
                 travelerPos.z = -1;
                 transform.position = travelerPos;
-                yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(sleepDuration);
             }
+
+            gridView.PaintPath(path, false);
         }
 
         [ContextMenu("FindPath")]
@@ -67,6 +70,10 @@ namespace AIP1_Laure.View.Pathfinding
         [ContextMenu("Repeat")]
         public void RepeatPath()
         {
+            Vector3 travelerPos = gridView.ToGridAligned(startNode.GetCoordinate());
+            travelerPos.z = -1;
+            transform.position = travelerPos;
+
             List<Node<Vector2Int>> path = Pathfinder.FindPath(startNode, destinationNode);
             StartCoroutine(Move(path));
         }

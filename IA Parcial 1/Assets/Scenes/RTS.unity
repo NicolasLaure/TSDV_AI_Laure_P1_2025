@@ -429,6 +429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destinationObject: {fileID: 260123696}
+  sleepDuration: 0.25
   gridView: {fileID: 286072597}
 --- !u!65 &599778117
 BoxCollider:

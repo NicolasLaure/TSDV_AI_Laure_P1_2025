@@ -30,7 +30,11 @@ namespace AIP1_Laure.AI.Pathfinding
         {
             Dictionary<NodeType, WeightedNode<NodeType>> openNodes = new Dictionary<NodeType, WeightedNode<NodeType>>();
 
+            Debug.Log($"StartNode: {startNode.GetCoordinate()}, Target: {destinationNode.GetCoordinate()}");
+
             NodeType currentNode = startNode;
+            WeightedNode<NodeType> initialWNode = new WeightedNode<NodeType>(currentNode, null, 0);
+            openNodes.Add(currentNode, initialWNode);
             while (!NodesEquals(currentNode, destinationNode))
             {
                 foreach (NodeType node in GetValidNeighbours(currentNode))
@@ -55,7 +59,6 @@ namespace AIP1_Laure.AI.Pathfinding
                         openNodes.Add(node, wNode);
                     }
                 }
-
 
                 openNodes.Remove(currentNode);
                 NodeType lessExpensive = new NodeType();
@@ -84,8 +87,8 @@ namespace AIP1_Laure.AI.Pathfinding
             path.Add(currentNode.node);
             while (currentNode.parent != null)
             {
-                path.Add(currentNode.parent.node);
                 currentNode = currentNode.parent;
+                path.Add(currentNode.node);
             }
 
             path.Reverse();

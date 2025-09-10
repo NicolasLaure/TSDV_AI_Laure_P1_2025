@@ -9,9 +9,12 @@ public class NodeView : MonoBehaviour, IPointerClickHandler
 
     [SerializeField] private Material clearMat;
     [SerializeField] private Material blockedMat;
+    [SerializeField] private Material pathMat;
 
     [SerializeField] private TextMeshPro text;
     private MeshRenderer _meshRenderer;
+
+    private Material prevMat;
 
     public void Init(INode node)
     {
@@ -56,5 +59,16 @@ public class NodeView : MonoBehaviour, IPointerClickHandler
     private void UpdateNumberText(int newWeight)
     {
         text.text = newWeight.ToString();
+    }
+
+    public void SetPath(bool shouldDraw)
+    {
+        if (shouldDraw)
+        {
+            prevMat = _meshRenderer.material;
+            _meshRenderer.material = pathMat;
+        }
+        else
+            _meshRenderer.material = prevMat;
     }
 }
