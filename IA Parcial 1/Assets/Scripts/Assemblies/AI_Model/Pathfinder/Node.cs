@@ -1,10 +1,11 @@
 ﻿using Pathfinder;
 using UnityEngine;
 
-public class Node<Coordinate> : INode, INode<Coordinate>
+public class Node<Coordinate> : INode, IWeightedNode, INode<Coordinate>
 {
     private Coordinate coordinate;
     private bool isBlocked = false;
+    private int weight = 0;
 
     public void SetCoordinate(Coordinate coordinate)
     {
@@ -25,5 +26,15 @@ public class Node<Coordinate> : INode, INode<Coordinate>
     {
         Debug.Log($"Is Blocked: {isBlocked}");
         isBlocked = !isBlocked;
+    }
+
+    public void SetWeight(int newWeight)
+    {
+        weight = newWeight;
+    }
+
+    public int GetWeight()
+    {
+        return weight;
     }
 }

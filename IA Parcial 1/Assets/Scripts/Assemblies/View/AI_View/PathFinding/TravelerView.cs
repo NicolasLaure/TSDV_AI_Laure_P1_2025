@@ -13,24 +13,28 @@ namespace AIP1_Laure.View.Pathfinding
 
         public GridView gridView;
 
-        private DepthFirstPathfinder<Node<Vector2Int>> _pathfinder;
+        //private DepthFirstPathfinder<Node<Vector2Int>> _pathfinder;
         //private BreadthFirstPathfinder<Node<Vector2Int>> Pathfinder;
         //private DijstraPathfinder<Node<Vector2Int>> Pathfinder;
-        //private AStarPathfinder<Node<Vector2Int>> Pathfinder;
+        private AStarPathfinder<Node<Vector2Int>> Pathfinder;
 
         private Node<Vector2Int> startNode;
         private Node<Vector2Int> destinationNode;
 
         private void Start()
         {
-            _pathfinder = new DepthFirstPathfinder<Node<Vector2Int>>(gridView.grid);
+            //_pathfinder = new DepthFirstPathfinder<Node<Vector2Int>>(gridView.grid);
+            Pathfinder = new AStarPathfinder<Node<Vector2Int>>(gridView.grid);
         }
 
         public IEnumerator Move(List<Node<Vector2Int>> path)
         {
+            yield return new WaitForSeconds(1.0f);
             foreach (Node<Vector2Int> node in path)
             {
-                transform.position = new Vector3(node.GetCoordinate().x, node.GetCoordinate().y);
+                Vector3 travelerPos = gridView.ToGridAligned(node.GetCoordinate());
+                travelerPos.z = -1;
+                transform.position = travelerPos;
                 yield return new WaitForSeconds(1.0f);
             }
         }
@@ -56,7 +60,14 @@ namespace AIP1_Laure.View.Pathfinding
             travelerPos.z = -1;
             transform.position = travelerPos;
 
-            List<Node<Vector2Int>> path = _pathfinder.FindPath(startNode, destinationNode);
+            List<Node<Vector2Int>> path = Pathfinder.FindPath(startNode, destinationNode);
+            StartCoroutine(Move(path));
+        }
+
+        [ContextMenu("Repeat")]
+        public void RepeatPath()
+        {
+            List<Node<Vector2Int>> path = Pathfinder.FindPath(startNode, destinationNode);
             StartCoroutine(Move(path));
         }
     }

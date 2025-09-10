@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Pathfinder
 {
-    public class Grid<NodeType> : Graph<NodeType> where NodeType : INode<UnityEngine.Vector2Int>, INode, new()
+    public class Grid<NodeType> : Graph<NodeType> where NodeType : INode<UnityEngine.Vector2Int>, INode, IWeightedNode, new()
     {
         private int width;
         private int height;
