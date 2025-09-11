@@ -227,6 +227,8 @@ MonoBehaviour:
   cubeSize: {x: 1.25, y: 1.25, z: 1}
   GridSpacing: 0.25
   nodePrefab: {fileID: 6585422184853366062, guid: 3b170d845f69ee9489deeff2b1e366da, type: 3}
+  minePrefab: {fileID: 1046227378242243737, guid: 401dc54e69990f74faccf21aa03ad1bb, type: 3}
+  landmarksQty: 3
 --- !u!4 &286072598
 Transform:
   m_ObjectHideFlags: 0

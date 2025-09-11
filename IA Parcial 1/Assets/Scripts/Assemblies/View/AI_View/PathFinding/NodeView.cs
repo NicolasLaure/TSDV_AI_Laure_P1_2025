@@ -9,19 +9,19 @@ namespace AI_View.Pathfinding
     {
         public INode node;
 
-        [SerializeField] private Material clearMat;
-        [SerializeField] private Material blockedMat;
-        [SerializeField] private Material pathMat;
+        [SerializeField] private Color clearColor;
+        [SerializeField] private Color blockedColor;
+        [SerializeField] private Color pathColor;
 
         [SerializeField] private TextMeshPro text;
-        private MeshRenderer _meshRenderer;
+        [SerializeField] private SpriteRenderer frontSprite;
 
-        private Material prevMat;
+        private Color prevColor;
+        private Color areaColor;
 
         public void Init(INode node)
         {
             this.node = node;
-            _meshRenderer ??= GetComponent<MeshRenderer>();
             UpdateMaterial();
             UpdateNumberText((node as IWeightedNode).GetWeight());
         }
@@ -53,9 +53,9 @@ namespace AI_View.Pathfinding
         private void UpdateMaterial()
         {
             if (node.IsBlocked())
-                _meshRenderer.material = blockedMat;
+                frontSprite.color = blockedColor;
             else
-                _meshRenderer.material = clearMat;
+                frontSprite.color = clearColor;
         }
 
         private void UpdateNumberText(int newWeight)
@@ -67,11 +67,20 @@ namespace AI_View.Pathfinding
         {
             if (shouldDraw)
             {
-                prevMat = _meshRenderer.material;
-                _meshRenderer.material = pathMat;
+                prevColor = frontSprite.color;
+                frontSprite.color = pathColor;
             }
             else
-                _meshRenderer.material = prevMat;
+                frontSprite.color = prevColor;
+        }
+
+        public void SetAreaColor(Color color)
+        {
+            areaColor = color;
+            if (node.IsBlocked())
+                areaColor = color * blockedColor;
+
+            frontSprite.color = areaColor;
         }
     }
 }

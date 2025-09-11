@@ -16,5 +16,7 @@ namespace AI_Model.Pathfinding
 
             return null;
         }
+
+        public abstract int Distance(NodeType A, NodeType B);
     }
 }
