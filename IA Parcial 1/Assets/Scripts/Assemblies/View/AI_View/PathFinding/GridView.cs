@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using AI_Model.Pathfinding;
 using UnityEngine;
 
-namespace Pathfinder
+namespace AI_View.Pathfinding
 {
     public class GridView : MonoBehaviour
     {

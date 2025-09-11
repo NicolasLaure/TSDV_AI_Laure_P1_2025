@@ -1,4 +1,4 @@
-﻿namespace Pathfinder
+﻿namespace AI_Model.Pathfinding
 {
     public interface INode
     {

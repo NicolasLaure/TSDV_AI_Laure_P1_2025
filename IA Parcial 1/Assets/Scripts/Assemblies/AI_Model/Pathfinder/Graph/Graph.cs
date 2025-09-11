@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Pathfinder
+namespace AI_Model.Pathfinding
 {
     public abstract class Graph<NodeType> where NodeType : INode<UnityEngine.Vector2Int>, INode, new()
     {

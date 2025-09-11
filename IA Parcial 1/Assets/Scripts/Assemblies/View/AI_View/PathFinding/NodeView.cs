@@ -1,74 +1,77 @@
-using Pathfinder;
+using AI_Model.Pathfinding;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TMPro;
 
-public class NodeView : MonoBehaviour, IPointerClickHandler
+namespace AI_View.Pathfinding
 {
-    public INode node;
-
-    [SerializeField] private Material clearMat;
-    [SerializeField] private Material blockedMat;
-    [SerializeField] private Material pathMat;
-
-    [SerializeField] private TextMeshPro text;
-    private MeshRenderer _meshRenderer;
-
-    private Material prevMat;
-
-    public void Init(INode node)
+    public class NodeView : MonoBehaviour, IPointerClickHandler
     {
-        this.node = node;
-        _meshRenderer ??= GetComponent<MeshRenderer>();
-        UpdateMaterial();
-        UpdateNumberText((node as IWeightedNode).GetWeight());
-    }
+        public INode node;
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Left)
-            UpdateWeight(true);
-        else if (eventData.button == PointerEventData.InputButton.Right)
-            UpdateWeight(false);
-        else if (eventData.button == PointerEventData.InputButton.Middle)
-            ToggleBlock();
-    }
+        [SerializeField] private Material clearMat;
+        [SerializeField] private Material blockedMat;
+        [SerializeField] private Material pathMat;
 
-    private void UpdateWeight(bool goesUp)
-    {
-        IWeightedNode weightedNode = (node as IWeightedNode);
-        int newWeight = goesUp ? weightedNode.GetWeight() + 1 : weightedNode.GetWeight() - 1;
-        weightedNode.SetWeight(newWeight);
-        UpdateNumberText(weightedNode.GetWeight());
-    }
+        [SerializeField] private TextMeshPro text;
+        private MeshRenderer _meshRenderer;
 
-    private void ToggleBlock()
-    {
-        node.ToggleBlock();
-        UpdateMaterial();
-    }
+        private Material prevMat;
 
-    private void UpdateMaterial()
-    {
-        if (node.IsBlocked())
-            _meshRenderer.material = blockedMat;
-        else
-            _meshRenderer.material = clearMat;
-    }
-
-    private void UpdateNumberText(int newWeight)
-    {
-        text.text = newWeight.ToString();
-    }
-
-    public void SetPath(bool shouldDraw)
-    {
-        if (shouldDraw)
+        public void Init(INode node)
         {
-            prevMat = _meshRenderer.material;
-            _meshRenderer.material = pathMat;
+            this.node = node;
+            _meshRenderer ??= GetComponent<MeshRenderer>();
+            UpdateMaterial();
+            UpdateNumberText((node as IWeightedNode).GetWeight());
         }
-        else
-            _meshRenderer.material = prevMat;
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Left)
+                UpdateWeight(true);
+            else if (eventData.button == PointerEventData.InputButton.Right)
+                UpdateWeight(false);
+            else if (eventData.button == PointerEventData.InputButton.Middle)
+                ToggleBlock();
+        }
+
+        private void UpdateWeight(bool goesUp)
+        {
+            IWeightedNode weightedNode = (node as IWeightedNode);
+            int newWeight = goesUp ? weightedNode.GetWeight() + 1 : weightedNode.GetWeight() - 1;
+            weightedNode.SetWeight(newWeight);
+            UpdateNumberText(weightedNode.GetWeight());
+        }
+
+        private void ToggleBlock()
+        {
+            node.ToggleBlock();
+            UpdateMaterial();
+        }
+
+        private void UpdateMaterial()
+        {
+            if (node.IsBlocked())
+                _meshRenderer.material = blockedMat;
+            else
+                _meshRenderer.material = clearMat;
+        }
+
+        private void UpdateNumberText(int newWeight)
+        {
+            text.text = newWeight.ToString();
+        }
+
+        public void SetPath(bool shouldDraw)
+        {
+            if (shouldDraw)
+            {
+                prevMat = _meshRenderer.material;
+                _meshRenderer.material = pathMat;
+            }
+            else
+                _meshRenderer.material = prevMat;
+        }
     }
 }

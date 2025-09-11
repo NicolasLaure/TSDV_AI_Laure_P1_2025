@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pathfinder
+namespace AI_Model.Pathfinding
 {
     public class Grid<NodeType> : Graph<NodeType> where NodeType : INode<UnityEngine.Vector2Int>, INode, IWeightedNode, new()
     {

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pathfinder;
 using UnityEngine;
 
-namespace AIP1_Laure.AI.Pathfinding
+namespace AI_Model.Pathfinding
 {
     public class BreadthFirstPathfinder<NodeType> : Pathfinder<NodeType>
         where NodeType : INode<Vector2Int>, INode, new()

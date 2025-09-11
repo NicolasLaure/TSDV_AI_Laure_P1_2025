@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using AIP1_Laure.AI.Pathfinding;
-using Pathfinder;
+using AI_Model.Pathfinding;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace AIP1_Laure.View.Pathfinding
+namespace AI_View.Pathfinding
 {
     public class TravelerView : MonoBehaviour
     {
