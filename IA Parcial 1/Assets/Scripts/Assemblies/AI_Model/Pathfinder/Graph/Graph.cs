@@ -14,7 +14,7 @@ namespace AI_Model.Pathfinding
             if (nodeToNeighbours.ContainsKey(node))
                 return nodeToNeighbours[node];
 
-            return null;
+            return new List<NodeType>();
         }
 
         public abstract int Distance(NodeType A, NodeType B);

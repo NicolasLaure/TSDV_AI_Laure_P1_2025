@@ -4,14 +4,17 @@ using UnityEngine;
 
 namespace AI_Model.Pathfinding
 {
-    public class AStarPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode<Vector2Int>, INode, IWeightedNode, new()
+    public class AStarPathfinder<NodeType> : Pathfinder<NodeType>
+        where NodeType : INode<Vector2Int>, INode, IWeightedNode, new()
     {
+        private List<NodeType> closedNodes = new List<NodeType>();
+
         public AStarPathfinder(Graph<NodeType> graph)
         {
             this.graph = graph;
         }
 
-        public class WeightedNode<NodeType>
+        public class WeightedNode<NodeType> where NodeType : INode<Vector2Int>, INode, IWeightedNode, new()
         {
             public NodeType node;
             public WeightedNode<NodeType> parent;
@@ -30,11 +33,11 @@ namespace AI_Model.Pathfinding
             Dictionary<NodeType, WeightedNode<NodeType>> openNodes = new Dictionary<NodeType, WeightedNode<NodeType>>();
 
             Debug.Log($"StartNode: {startNode.GetCoordinate()}, Target: {destinationNode.GetCoordinate()}");
-
             NodeType currentNode = startNode;
+            closedNodes.Clear();
             WeightedNode<NodeType> initialWNode = new WeightedNode<NodeType>(currentNode, null, 0);
             openNodes.Add(currentNode, initialWNode);
-            while (!NodesEquals(currentNode, destinationNode))
+            while (!NodesEquals(currentNode, destinationNode) && openNodes.Count > 0)
             {
                 foreach (NodeType node in GetValidNeighbours(currentNode))
                 {
@@ -48,7 +51,8 @@ namespace AI_Model.Pathfinding
 
                     int heuristic = Distance(node, destinationNode) + node.GetWeight();
 
-                    WeightedNode<NodeType> wNode = new WeightedNode<NodeType>(node, parent, acumulativeCost + heuristic);
+                    WeightedNode<NodeType> wNode =
+                        new WeightedNode<NodeType>(node, parent, acumulativeCost + heuristic);
 
                     if (!openNodes.ContainsKey(node))
                         openNodes.Add(node, wNode);
@@ -60,6 +64,7 @@ namespace AI_Model.Pathfinding
                 }
 
                 openNodes.Remove(currentNode);
+                closedNodes.Add(currentNode);
                 NodeType lessExpensive = new NodeType();
                 foreach (NodeType node in openNodes.Keys)
                 {
@@ -74,6 +79,12 @@ namespace AI_Model.Pathfinding
                 }
 
                 currentNode = lessExpensive;
+            }
+
+            if (destinationNode.IsBlocked() || !graph.nodes.Contains(currentNode))
+            {
+                Debug.LogError("No Valid Path");
+                return new List<NodeType>();
             }
 
             return GetPath(openNodes[currentNode]);
@@ -107,7 +118,7 @@ namespace AI_Model.Pathfinding
             List<NodeType> validNeighbours = new List<NodeType>();
             foreach (NodeType nodeToCheck in graph.GetNeighbours(node))
             {
-                if (!nodeToCheck.IsBlocked())
+                if (!nodeToCheck.IsBlocked() && !closedNodes.Contains(nodeToCheck))
                     validNeighbours.Add(nodeToCheck);
             }
 
