@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
-using UnityEngine;
+using AI_Model.Utilities;
 
 namespace AI_Model.Voronoi
 {
-    public class Voronoi<NodeType> where NodeType : INode<Vector2Int>, INode, IWeightedNode, new()
+    public class Voronoi<NodeType> where NodeType : INode<Vec2Int>, INode, IWeightedNode, new()
     {
         private Graph<NodeType> graph;
 

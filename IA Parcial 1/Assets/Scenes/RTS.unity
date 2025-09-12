@@ -222,8 +222,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9505ac3f90de150418590939da61c3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridWidth: 10
-  gridHeight: 10
+  gridWidth: 30
+  gridHeight: 30
   cubeSize: {x: 1.25, y: 1.25, z: 1}
   GridSpacing: 0.25
   nodePrefab: {fileID: 6585422184853366062, guid: 3b170d845f69ee9489deeff2b1e366da, type: 3}
@@ -305,7 +305,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using AI_Model.Utilities;
 
 namespace AI_Model.Pathfinding
 {
-    public class Grid<NodeType> : Graph<NodeType> where NodeType : INode<Vector2Int>, INode, IWeightedNode, new()
+    public class Grid<NodeType> : Graph<NodeType> where NodeType : INode<Vec2Int>, INode, IWeightedNode, new()
     {
         private int width;
         private int height;
@@ -23,7 +23,7 @@ namespace AI_Model.Pathfinding
                 for (int j = 0; j < height; j++)
                 {
                     NodeType node = new NodeType();
-                    node.SetCoordinate(new UnityEngine.Vector2Int(i, j));
+                    node.SetCoordinate(new Vec2Int(i, j));
                     nodes.Add(node);
                 }
             }
@@ -61,10 +61,10 @@ namespace AI_Model.Pathfinding
 
         public override int Distance(NodeType A, NodeType B)
         {
-            Vector2Int aPos = A.GetCoordinate();
-            Vector2Int bPos = B.GetCoordinate();
+            Vec2Int aPos = A.GetCoordinate();
+            Vec2Int bPos = B.GetCoordinate();
 
-            return Mathf.Abs(aPos.x - bPos.x) + Mathf.Abs(aPos.y - bPos.y);
+            return (int)MathF.Abs(aPos.X - bPos.X) + (int)MathF.Abs(aPos.Y - bPos.Y);
         }
     }
 }

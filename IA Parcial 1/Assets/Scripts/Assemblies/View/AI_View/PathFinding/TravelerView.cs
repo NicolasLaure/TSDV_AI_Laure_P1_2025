@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
+using AI_Model.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,25 +13,25 @@ namespace AI_View.Pathfinding
         [SerializeField] private float sleepDuration = 0.1f;
         public GridView gridView;
 
-        //private DepthFirstPathfinder<Node<Vector2Int>> _pathfinder;
-        //private BreadthFirstPathfinder<Node<Vector2Int>> Pathfinder;
-        //private DijstraPathfinder<Node<Vector2Int>> Pathfinder;
-        private AStarPathfinder<Node<Vector2Int>> Pathfinder;
+        //private DepthFirstPathfinder<Node<Vec2Int>> _pathfinder;
+        //private BreadthFirstPathfinder<Node<Vec2Int>> Pathfinder;
+        //private DijstraPathfinder<Node<Vec2Int>> Pathfinder;
+        private AStarPathfinder<Node<Vec2Int>> Pathfinder;
 
-        private Node<Vector2Int> startNode;
-        private Node<Vector2Int> destinationNode;
+        private Node<Vec2Int> startNode;
+        private Node<Vec2Int> destinationNode;
 
         private void Start()
         {
-            //_pathfinder = new DepthFirstPathfinder<Node<Vector2Int>>(gridView.grid);
-            Pathfinder = new AStarPathfinder<Node<Vector2Int>>(gridView.grid);
+            //_pathfinder = new DepthFirstPathfinder<Node<Vec2Int>>(gridView.grid);
+            Pathfinder = new AStarPathfinder<Node<Vec2Int>>(gridView.grid);
         }
 
-        public IEnumerator Move(List<Node<Vector2Int>> path)
+        public IEnumerator Move(List<Node<Vec2Int>> path)
         {
             gridView.PaintPath(path, true);
             yield return new WaitForSeconds(sleepDuration);
-            foreach (Node<Vector2Int> node in path)
+            foreach (Node<Vec2Int> node in path)
             {
                 Vector3 travelerPos = gridView.ToGridAligned(node.GetCoordinate());
                 travelerPos.z = -1;
@@ -49,11 +50,7 @@ namespace AI_View.Pathfinding
                 startNode = gridView.grid.nodes[Random.Range(0, gridView.grid.nodes.Count)];
             } while (startNode.IsBlocked());
 
-            do
-            {
-                destinationNode = gridView.grid.nodes[Random.Range(0, gridView.grid.nodes.Count)];
-            } while (destinationNode.IsBlocked() || destinationNode == startNode);
-
+            destinationNode = gridView.voronoi.GetClosestLandMark(startNode);
             Vector3 destPos = gridView.ToGridAligned(destinationNode.GetCoordinate());
             destPos.z = -1;
             destinationObject.transform.position = destPos;
@@ -62,7 +59,7 @@ namespace AI_View.Pathfinding
             travelerPos.z = -1;
             transform.position = travelerPos;
 
-            List<Node<Vector2Int>> path = Pathfinder.FindPath(startNode, destinationNode);
+            List<Node<Vec2Int>> path = Pathfinder.FindPath(startNode, destinationNode);
             StartCoroutine(Move(path));
         }
 
@@ -73,7 +70,7 @@ namespace AI_View.Pathfinding
             travelerPos.z = -1;
             transform.position = travelerPos;
 
-            List<Node<Vector2Int>> path = Pathfinder.FindPath(startNode, destinationNode);
+            List<Node<Vec2Int>> path = Pathfinder.FindPath(startNode, destinationNode);
             StartCoroutine(Move(path));
         }
     }

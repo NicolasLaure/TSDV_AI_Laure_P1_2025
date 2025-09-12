@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using AI_Model.Utilities;
 
 namespace AI_Model.Pathfinding
 {
-    public class DepthFirstPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode<Vector2Int>, INode, new()
+    public class DepthFirstPathfinder<NodeType> : Pathfinder<NodeType> where NodeType : INode<Vec2Int>, INode, new()
     {
         public DepthFirstPathfinder(Graph<NodeType> graph)
         {
@@ -39,9 +39,9 @@ namespace AI_Model.Pathfinding
 
         protected override int Distance(NodeType A, NodeType B)
         {
-            Vector2Int aPos = A.GetCoordinate();
-            Vector2Int bPos = B.GetCoordinate();
-            return (int)MathF.Floor(MathF.Abs(aPos.x - bPos.x) + MathF.Abs(aPos.y - bPos.y));
+            Vec2Int aPos = A.GetCoordinate();
+            Vec2Int bPos = B.GetCoordinate();
+            return (int)MathF.Floor(MathF.Abs(aPos.X - bPos.X) + MathF.Abs(aPos.Y - bPos.Y));
         }
 
         protected override int MoveToNeighborCost(NodeType A, NodeType b)

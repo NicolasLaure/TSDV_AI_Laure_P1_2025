@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using AI_Model.Utilities;
 
 namespace AI_Model.Pathfinding
 {
     public class AStarPathfinder<NodeType> : Pathfinder<NodeType>
-        where NodeType : INode<Vector2Int>, INode, IWeightedNode, new()
+        where NodeType : INode<Vec2Int>, INode, IWeightedNode, new()
     {
         private List<NodeType> closedNodes = new List<NodeType>();
 
@@ -14,7 +14,7 @@ namespace AI_Model.Pathfinding
             this.graph = graph;
         }
 
-        public class WeightedNode<NodeType> where NodeType : INode<Vector2Int>, INode, IWeightedNode, new()
+        public class WeightedNode<NodeType> where NodeType : INode<Vec2Int>, INode, IWeightedNode, new()
         {
             public NodeType node;
             public WeightedNode<NodeType> parent;
@@ -32,7 +32,7 @@ namespace AI_Model.Pathfinding
         {
             Dictionary<NodeType, WeightedNode<NodeType>> openNodes = new Dictionary<NodeType, WeightedNode<NodeType>>();
 
-            Debug.Log($"StartNode: {startNode.GetCoordinate()}, Target: {destinationNode.GetCoordinate()}");
+            Logger.Log($"StartNode: {startNode.GetCoordinate()}, Target: {destinationNode.GetCoordinate()}");
             NodeType currentNode = startNode;
             closedNodes.Clear();
             WeightedNode<NodeType> initialWNode = new WeightedNode<NodeType>(currentNode, null, 0);
@@ -83,7 +83,7 @@ namespace AI_Model.Pathfinding
 
             if (destinationNode.IsBlocked() || !graph.nodes.Contains(currentNode))
             {
-                Debug.LogError("No Valid Path");
+                Logger.LogError("No Valid Path");
                 return new List<NodeType>();
             }
 
@@ -108,7 +108,7 @@ namespace AI_Model.Pathfinding
                 pathString += node.GetCoordinate().ToString() + ", ";
             }
 
-            Debug.Log(pathString);
+            Logger.Log(pathString);
 
             return path;
         }
@@ -127,10 +127,10 @@ namespace AI_Model.Pathfinding
 
         protected override int Distance(NodeType A, NodeType B)
         {
-            Vector2Int aPos = A.GetCoordinate();
-            Vector2Int bPos = B.GetCoordinate();
+            Vec2Int aPos = A.GetCoordinate();
+            Vec2Int bPos = B.GetCoordinate();
 
-            return Mathf.Abs(aPos.x - bPos.x) + Mathf.Abs(aPos.y - bPos.y);
+            return (int)MathF.Abs(aPos.X - bPos.X) + (int)MathF.Abs(aPos.Y - bPos.Y);
         }
 
         protected override int MoveToNeighborCost(NodeType A, NodeType b)
@@ -140,7 +140,7 @@ namespace AI_Model.Pathfinding
 
         protected override bool NodesEquals(NodeType A, NodeType B)
         {
-            return A.GetCoordinate().x == B.GetCoordinate().x && A.GetCoordinate().y == B.GetCoordinate().y;
+            return A.GetCoordinate().X == B.GetCoordinate().X && A.GetCoordinate().Y == B.GetCoordinate().Y;
         }
     }
 }

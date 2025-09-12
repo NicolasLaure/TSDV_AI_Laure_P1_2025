@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace AI_Model.Pathfinding
+﻿namespace AI_Model.Pathfinding
 {
     public class Node<Coordinate> : INode, IWeightedNode, INode<Coordinate>
     {
@@ -25,7 +23,7 @@ namespace AI_Model.Pathfinding
 
         public void ToggleBlock()
         {
-            Debug.Log($"Is Blocked: {isBlocked}");
+            Logger.Log($"Is Blocked: {isBlocked}");
             isBlocked = !isBlocked;
         }
 

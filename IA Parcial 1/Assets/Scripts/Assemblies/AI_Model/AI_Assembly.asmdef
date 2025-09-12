@@ -1,7 +1,9 @@
 {
     "name": "AI_Assembly",
     "rootNamespace": "AI",
-    "references": [],
+    "references": [
+        "GUID:cd23b527f827e3a4cb0c9ce62d712446"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -10,5 +12,5 @@
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
-    "noEngineReferences": false
+    "noEngineReferences": true
 }

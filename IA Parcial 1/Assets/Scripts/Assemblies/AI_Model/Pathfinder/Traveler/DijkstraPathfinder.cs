@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using AI_Model.Utilities;
 
 namespace AI_Model.Pathfinding
 {
     public class DijkstraPathfinder<NodeType> : Pathfinder<NodeType>
-        where NodeType : INode<Vector2Int>, INode, new()
+        where NodeType : INode<Vec2Int>, INode, new()
     {
         public override List<NodeType> FindPath(NodeType startNode, NodeType destinationNode)
         {
