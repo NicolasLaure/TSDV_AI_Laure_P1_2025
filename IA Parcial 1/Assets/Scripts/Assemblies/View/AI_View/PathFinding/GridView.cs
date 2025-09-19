@@ -2,15 +2,14 @@ using System.Collections.Generic;
 using AI_Model.Pathfinding;
 using AI_Model.Utilities;
 using AI_Model.Voronoi;
+using RTS.Model;
 using UnityEngine;
 
 namespace AI_View.Pathfinding
 {
     public class GridView : MonoBehaviour
     {
-        public Grid<Node<Vec2Int>> grid;
-        [SerializeField] private int gridWidth;
-        [SerializeField] private int gridHeight;
+        public Grid<MapNode> grid;
         [SerializeField] private Vector3 cubeSize;
         [SerializeField] private float GridSpacing;
         [SerializeField] private GameObject nodePrefab;
@@ -19,16 +18,15 @@ namespace AI_View.Pathfinding
         [Header("Voronoi")] [SerializeField] private int landmarksQty;
 
         private Dictionary<INode, NodeView> nodeToView = new Dictionary<INode, NodeView>();
-
-        public Voronoi<Node<Vec2Int>> voronoi;
-        private List<Node<Vec2Int>> landMarks = new List<Node<Vec2Int>>();
-
         private List<GameObject> landMarkObjects = new List<GameObject>();
 
-        void Awake()
+        private Dictionary<MapNode, GameObject> nodeToHeldGameObject = new Dictionary<MapNode, GameObject>();
+
+        public void Init(Grid<MapNode> grid)
         {
-            Camera.main.transform.position = new Vector3(gridWidth / 2 * cubeSize.x, gridHeight / 2* cubeSize.y, -gridWidth);
-            grid = new Grid<Node<Vec2Int>>(gridWidth, gridHeight);
+            this.grid = grid;
+            Camera.main.transform.position =
+                new Vector3(grid.Width / 2 * cubeSize.x, grid.Height / 2 * cubeSize.y, -grid.Width);
             foreach (Node<Vec2Int> node in grid.nodes)
             {
                 GameObject nodeObject =
@@ -38,8 +36,6 @@ namespace AI_View.Pathfinding
                 nodeToView.Add(node, nodeView);
                 nodeObject.transform.localScale = cubeSize;
             }
-
-            voronoi = new Voronoi<Node<Vec2Int>>(grid);
         }
 
         public Vector3 ToGridAligned(Vec2Int nodePosition)
@@ -48,52 +44,42 @@ namespace AI_View.Pathfinding
                 nodePosition.Y * (cubeSize.y + GridSpacing / 2));
         }
 
-        public void PaintPath(List<Node<Vec2Int>> path, bool shouldDraw)
+        public void PaintPath(List<MapNode> path, bool shouldDraw)
         {
-            foreach (Node<Vec2Int> node in path)
+            foreach (MapNode node in path)
             {
                 nodeToView[node].SetPath(shouldDraw);
             }
         }
 
-        [ContextMenu("Bake")]
-        public void BakeVoronoi()
+        public void AddMines(List<MapNode> mines)
         {
-            landMarks.Clear();
-            for (int i = 0; i < landmarksQty; i++)
+            foreach (GameObject mine in landMarkObjects)
             {
-                Node<Vec2Int> newLandmark;
-                do
-                {
-                    newLandmark = grid.nodes[Random.Range(0, grid.nodes.Count)];
-                } while (landMarks.Contains(newLandmark));
-
-                landMarks.Add(newLandmark);
-            }
-
-            voronoi.Bake(landMarks);
-
-            foreach (GameObject landMarkObject in landMarkObjects)
-            {
-                Destroy(landMarkObject);
+                Destroy(mine);
             }
 
             landMarkObjects.Clear();
 
-            foreach (Node<Vec2Int> landmark in landMarks)
+            foreach (MapNode mine in mines)
             {
-                Vector3 minePos = ToGridAligned(landmark.GetCoordinate());
-                minePos.z = -1;
-                landMarkObjects.Add(Instantiate(minePrefab, minePos, Quaternion.identity));
-                PaintNodes(voronoi.GetLandmarkNodes(landmark));
+                AddMine(mine);
             }
         }
 
-        private void PaintNodes(List<Node<Vec2Int>> nodes)
+        public void AddMine(MapNode mineLocation)
+        {
+            GameObject mineObject = Instantiate(minePrefab, ToGridAligned(mineLocation.GetCoordinate()),
+                Quaternion.identity);
+            landMarkObjects.Add(mineObject);
+            nodeToHeldGameObject.Add(mineLocation, mineObject);
+        }
+
+        private void PaintNodes(List<MapNode> nodes)
         {
             Color randomColor = Random.ColorHSV();
             randomColor.a = 1;
-            foreach (Node<Vec2Int> node in nodes)
+            foreach (MapNode node in nodes)
             {
                 nodeToView[node].SetAreaColor(randomColor);
             }

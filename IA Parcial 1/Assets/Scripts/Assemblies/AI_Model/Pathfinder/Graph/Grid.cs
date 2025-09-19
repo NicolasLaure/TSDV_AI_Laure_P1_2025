@@ -9,6 +9,10 @@ namespace AI_Model.Pathfinding
         private int width;
         private int height;
 
+
+        public int Width => width;
+        public int Height => height;
+
         public Grid(int x, int y)
         {
             width = x;
