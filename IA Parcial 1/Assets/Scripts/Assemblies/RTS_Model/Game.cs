@@ -15,7 +15,7 @@ namespace RTS.Model
             for (int i = 0; i < minesQty; i++)
                 map.AddRandomMine();
 
-            villagers.Add(new Villager(map));
+            villagers.Add(new Villager(map, map.grid.GetNeighbours(map.hqNode)[0]));
         }
     }
 }

@@ -142,8 +142,10 @@ public class FSM<StateType, FlagType>
         if (expectedParams.Length == 0 && receivedParams == null)
             return;
 
+        object[] parameters = receivedParams.Invoke();
+        
         List<Type> receivedParametersTypes = new List<Type>();
-        foreach (object parameter in receivedParams.Invoke())
+        foreach (object parameter in parameters)
         {
             receivedParametersTypes.Add(parameter.GetType());
         }

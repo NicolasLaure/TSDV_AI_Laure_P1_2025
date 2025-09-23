@@ -8,9 +8,9 @@ namespace RTS.Model
     {
         public override Type[] OnTickParametersTypes => new Type[]
         {
+            typeof(IMapEntity),
             typeof(Inventory),
-            typeof(float),
-            typeof(HeadQuarters)
+            typeof(float)
         };
 
         private float startTime;

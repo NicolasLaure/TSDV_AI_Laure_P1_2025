@@ -1,13 +1,18 @@
 using System;
+using AI_Model.Pathfinding;
 using FSM;
 
 namespace RTS.Model
 {
     public class WalkState : State
     {
+        public override Type[] OnEnterParametersTypes => new Type[]
+        {
+            typeof(Path<MapNode>)
+        };
+
         public override Type[] OnTickParametersTypes => new Type[]
         {
-            typeof(MapNode),
             typeof(MapNode),
             typeof(float),
             typeof(float),
@@ -24,11 +29,11 @@ namespace RTS.Model
 
             BehaviourActions behaviourActions = new BehaviourActions();
             behaviourActions.AddMainThreadBehaviour(0,
-                () =>
-                {
-                    // agentPosition.position += (targetTransform.position - agentPosition.position).normalized *
-                    //                            (speed * delta);
-                });
+            () =>
+            {
+                // agentPosition.position += (targetTransform.position - agentPosition.position).normalized *
+                //                            (speed * delta);
+            });
 
             behaviourActions.SetTransitionBehaviour(() =>
             {

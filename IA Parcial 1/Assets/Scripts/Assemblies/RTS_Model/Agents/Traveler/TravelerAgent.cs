@@ -39,12 +39,15 @@ namespace RTS.Model
         protected Map map;
 
         protected AStarPathfinder<MapNode> pathfinder;
-        protected List<MapNode> currentPath;
+        protected List<MapNode> currentPath = new List<MapNode>();
 
-        public TravelerAgent(Map map)
+        public TravelerAgent(Map map, MapNode startPos)
         {
             this.map = map;
             pathfinder = new AStarPathfinder<MapNode>(map.grid);
+            agentPosition = startPos;
+            closestMineNode = FindClosestMine();
+            inventory = new Inventory();
         }
 
         public void Tick(float delta)

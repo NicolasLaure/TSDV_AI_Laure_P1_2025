@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using AI_Model.Pathfinding;
 
 namespace RTS.Model
@@ -7,7 +6,7 @@ namespace RTS.Model
     {
         private float sleepDuration = 0.1f;
 
-        public Villager(Map map) : base(map)
+        public Villager(Map map, MapNode startPos) : base(map, startPos)
         {
             fsm = new FSM<States, Flags>(States.WalkTowardsMine);
             AddStates();
@@ -16,45 +15,48 @@ namespace RTS.Model
 
         protected override void AddStates()
         {
+            Path<MapNode> path = new Path<MapNode>
+            {
+                nodes = currentPath
+            };
+
             fsm.AddState<WalkState>(States.WalkTowardsBase,
-                onEnterParams: () => new object[] { currentPath },
-                onTickParams: () => new object[] { agentPosition, speed, proximityThreshold, delta });
+            onEnterParams: () => new object[] { path },
+            onTickParams: () => new object[] { agentPosition, speed, proximityThreshold, delta });
 
             fsm.AddState<WalkState>(States.WalkTowardsMine,
-                onEnterParams: () => new object[] { currentPath },
-                onTickParams: () => new object[]
-                    { agentPosition, speed, proximityThreshold, delta });
+            onEnterParams: () => new object[] { path },
+            onTickParams: () => new object[] { agentPosition, speed, proximityThreshold, delta });
 
-            fsm.AddState<MineState>(States.Work, onTickParams: () => new object[] { inventory, miningSpeed });
-            fsm.AddState<UnloadState>(States.Unload,
-                onTickParams: () => new object[] { inventory, unloadingSpeed, map.headquarters });
+            fsm.AddState<MineState>(States.Work, onTickParams: () => new object[] { closestMineNode.heldEntity, inventory, miningSpeed });
+            fsm.AddState<UnloadState>(States.Unload, onTickParams: () => new object[] { map.headquarters, inventory, unloadingSpeed });
         }
 
         protected override void AddTransitions()
         {
             fsm.SetTransition(States.WalkTowardsMine, Flags.OnTargetReach, States.Work,
-                () =>
-                {
-                    /*Debug.Log("MineReached");*/
-                });
+            () =>
+            {
+                /*Debug.Log("MineReached");*/
+            });
             fsm.SetTransition(States.Work, Flags.OnBagFull, States.WalkTowardsBase,
-                () =>
-                {
-                    currentPath = pathfinder.FindPath(agentPosition, map.hqNode);
-                    /*Debug.Log("BagFull Returning To Base");*/
-                });
+            () =>
+            {
+                currentPath = pathfinder.FindPath(agentPosition, map.hqNode);
+                /*Debug.Log("BagFull Returning To Base");*/
+            });
             fsm.SetTransition(States.WalkTowardsBase, Flags.OnTargetReach, States.Unload,
-                () =>
-                {
-                    /*Debug.Log("BaseReached");*/
-                });
+            () =>
+            {
+                /*Debug.Log("BaseReached");*/
+            });
             fsm.SetTransition(States.Unload, Flags.OnBagEmpty, States.WalkTowardsMine,
-                () =>
-                {
-                    FindClosestMine();
-                    currentPath = pathfinder.FindPath(agentPosition, closestMineNode);
-                    /*Debug.Log("Bag Empty Returning to mine");*/
-                });
+            () =>
+            {
+                closestMineNode = FindClosestMine();
+                currentPath = pathfinder.FindPath(agentPosition, closestMineNode);
+                /*Debug.Log("Bag Empty Returning to mine");*/
+            });
         }
     }
 }
