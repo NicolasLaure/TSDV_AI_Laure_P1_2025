@@ -18,7 +18,7 @@ public class GameView : MonoBehaviour
     public void InitGame()
     {
         game = new Game(int.Parse(width.text), int.Parse(height.text), int.Parse(minesQty.text));
-        gridView.Init(game.map.grid);
+        gridView.Init(game.map);
         panel.SetActive(false);
     }
 }

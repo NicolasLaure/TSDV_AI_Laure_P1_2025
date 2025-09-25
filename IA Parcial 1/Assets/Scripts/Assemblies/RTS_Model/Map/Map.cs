@@ -23,7 +23,7 @@ namespace RTS.Model
             int hqPos = rnGen.Next(0, grid.nodes.Count);
             grid.nodes[hqPos].heldEntity = headquarters;
             hqNode = grid.nodes[hqPos];
-            
+
             voronoi = new Voronoi<MapNode>(grid);
             PopulateMines(minesQty);
         }
@@ -55,6 +55,17 @@ namespace RTS.Model
         {
             mineToNode.Remove(mine);
             voronoi.Bake(mineToNode.Values);
+        }
+
+        public List<MapNode> GetMineLocations()
+        {
+            List<MapNode> mineLocations = new List<MapNode>();
+            foreach (MapNode mapNode in mineToNode.Values)
+            {
+                mineLocations.Add(mapNode);
+            }
+
+            return mineLocations;
         }
     }
 }
