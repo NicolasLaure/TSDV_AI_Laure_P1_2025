@@ -10,13 +10,19 @@ namespace AI_Model.Voronoi
 
         private Dictionary<NodeType, List<NodeType>> landMarkToNodes = new Dictionary<NodeType, List<NodeType>>();
 
+        private List<NodeType> landmarks = new List<NodeType>();
+
+        public List<NodeType> Landmarks => landmarks;
+
         public Voronoi(Graph<NodeType> graph)
         {
             this.graph = graph;
         }
 
-        public void Bake(ICollection<NodeType> landMarks)
+        public void Bake(ICollection<NodeType> inLandMarks)
         {
+            landmarks.Clear();
+            landmarks.AddRange(inLandMarks);
             landMarkToNodes.Clear();
             Dictionary<NodeType, List<NodeType>> landMarkToOpenNodes = new Dictionary<NodeType, List<NodeType>>();
             Dictionary<NodeType, int> nodes = new Dictionary<NodeType, int>();
@@ -24,7 +30,7 @@ namespace AI_Model.Voronoi
             foreach (NodeType node in graph.nodes)
                 nodes.Add(node, -1);
 
-            foreach (NodeType node in landMarks)
+            foreach (NodeType node in inLandMarks)
             {
                 landMarkToNodes.Add(node, new List<NodeType>());
                 landMarkToOpenNodes.Add(node, new List<NodeType>());

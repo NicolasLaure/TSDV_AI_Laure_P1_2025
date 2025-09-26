@@ -1,16 +1,18 @@
 using UnityEngine;
 
-public class ConvoyView : MonoBehaviour
+namespace RTS.View
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class ConvoyView : MonoBehaviour
     {
-        
-    }
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        void Start()
+        {
+            
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Update is called once per frame
+        void Update()
+        {
+        }
     }
 }

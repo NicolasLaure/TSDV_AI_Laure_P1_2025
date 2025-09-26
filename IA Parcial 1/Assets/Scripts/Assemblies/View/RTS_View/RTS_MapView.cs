@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
 using AI_Model.Utilities;
-using AI_Model.Voronoi;
+using AI_View.Pathfinding;
 using RTS.Model;
 using UnityEngine;
 
-namespace AI_View.Pathfinding
+namespace RTS.View
 {
-    public class GridView : MonoBehaviour
+    public class RTS_MapView : MonoBehaviour
     {
         [SerializeField] private Vector3 cubeSize;
         [SerializeField] private float GridSpacing;
@@ -40,12 +40,20 @@ namespace AI_View.Pathfinding
 
             AddHeadQuarters(map.hqNode);
             AddMines(map.GetMineLocations());
+            foreach (MapNode landmark in map.voronoi.Landmarks)
+                PaintNodes(map.voronoi.GetLandmarkNodes(landmark));
         }
 
         public Vector3 ToGridAligned(Vec2Int nodePosition)
         {
             return new Vector3(nodePosition.X * (cubeSize.x + GridSpacing / 2),
-            nodePosition.Y * (cubeSize.y + GridSpacing / 2));
+                nodePosition.Y * (cubeSize.y + GridSpacing / 2));
+        }
+
+        public Vector3 ToEntityGridAligned(Vec2Int nodePosition)
+        {
+            return new Vector3(nodePosition.X * (cubeSize.x + GridSpacing / 2),
+                nodePosition.Y * (cubeSize.y + GridSpacing / 2), -1.0f);
         }
 
         public void PaintPath(List<MapNode> path, bool shouldDraw)
@@ -58,8 +66,7 @@ namespace AI_View.Pathfinding
 
         public void AddMines(List<MapNode> mines)
         {
-            landMarkObjects.Clear();
-
+            Debug.Log($"MinesQty: {mines.Count}");
             foreach (MapNode mine in mines)
             {
                 AddMine(mine);
@@ -71,8 +78,7 @@ namespace AI_View.Pathfinding
             if (nodeToHeldGameObject.ContainsKey(mineLocation))
                 return;
 
-            Vector3 minePos = ToGridAligned(mineLocation.GetCoordinate());
-            minePos.z = -1;
+            Vector3 minePos = ToEntityGridAligned(mineLocation.GetCoordinate());
             GameObject mineObject = Instantiate(minePrefab, minePos, Quaternion.identity);
 
             landMarkObjects.Add(mineObject);
@@ -81,8 +87,7 @@ namespace AI_View.Pathfinding
 
         public void AddHeadQuarters(MapNode hqLocation)
         {
-            Vector3 hqPos = ToGridAligned(hqLocation.GetCoordinate());
-            hqPos.z = -1;
+            Vector3 hqPos = ToEntityGridAligned(hqLocation.GetCoordinate());
             GameObject hqObject = Instantiate(hqPrefab, hqPos, Quaternion.identity);
             landMarkObjects.Add(hqObject);
             nodeToHeldGameObject.Add(hqLocation, hqObject);

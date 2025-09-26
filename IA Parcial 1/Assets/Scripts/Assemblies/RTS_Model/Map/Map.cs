@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
-using AI_Model.Utilities;
 using AI_Model.Voronoi;
 
 namespace RTS.Model
@@ -44,7 +43,17 @@ namespace RTS.Model
             {
                 int num = rnGen.Next(0, grid.nodes.Count);
                 if (grid.nodes[num].heldEntity == null)
-                    mineNode = grid.nodes[num];
+                {
+                    bool isClearAround = true;
+                    foreach (MapNode nodes in grid.GetNeighbours(grid.nodes[num]))
+                    {
+                        if (nodes.heldEntity != null)
+                            isClearAround = false;
+                    }
+
+                    if (isClearAround)
+                        mineNode = grid.nodes[num];
+                }
             } while (mineNode == null);
 
             mineNode.heldEntity = newMine;

@@ -12,10 +12,17 @@ namespace RTS.Model
         public Game(int width, int height, int minesQty)
         {
             map = new Map(width, height, minesQty);
-            for (int i = 0; i < minesQty; i++)
-                map.AddRandomMine();
-
+            
             villagers.Add(new Villager(map, map.grid.GetNeighbours(map.hqNode)[0]));
+        }
+
+        public void Tick(float delta)
+        {
+            foreach (Villager villager in villagers)
+                villager.Tick(delta);
+
+            foreach (Convoy convoy in convoys)
+                convoy.Tick(delta);
         }
     }
 }
