@@ -8,7 +8,7 @@ namespace RTS.Model
     {
         public override Type[] OnTickParametersTypes => new Type[]
         {
-            typeof(IMapEntity),
+            typeof(Mine),
             typeof(Inventory),
             typeof(float)
         };
@@ -24,8 +24,9 @@ namespace RTS.Model
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            Inventory inventory = parameters[0] as Inventory;
-            float miningSpeed = (float)parameters[1];
+            Mine mine = parameters[0] as Mine;
+            Inventory inventory = parameters[1] as Inventory;
+            float miningSpeed = (float)parameters[2];
 
             BehaviourActions behaviourActions = new BehaviourActions();
             behaviourActions.AddMainThreadBehaviour(0, () =>
@@ -33,6 +34,7 @@ namespace RTS.Model
                 if (Time.time - startTime >= miningSpeed)
                 {
                     startTime = Time.time;
+                    mine.Extract();
                     inventory.heldResources = Mathf.Clamp(inventory.heldResources + 1, 0, inventory.size);
                 }
             });
@@ -41,6 +43,9 @@ namespace RTS.Model
             {
                 if (inventory.heldResources == inventory.size)
                     OnFlag?.Invoke(TravelerAgent.Flags.OnBagFull);
+
+                if (mine.ShouldRemove)
+                    OnFlag?.Invoke(TravelerAgent.Flags.OnMineEmpty);
             });
 
             return behaviourActions;

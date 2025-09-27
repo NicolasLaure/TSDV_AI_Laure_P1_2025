@@ -1,6 +1,7 @@
 using System;
 using AI_Model.Pathfinding;
 using FSM;
+using UnityEngine;
 
 namespace RTS.Model
 {
@@ -13,18 +14,20 @@ namespace RTS.Model
 
         public override Type[] OnTickParametersTypes => new Type[]
         {
-            typeof(Func<MapNode>),
+            typeof(Func<TravelerAgent>),
         };
 
         private Path<MapNode> path;
-        private int step = 0;
+        private int step;
 
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
-            path = parameters[0] as Path<MapNode>;
-            step = 0;
             BehaviourActions behaviourActions = new BehaviourActions();
-            behaviourActions.AddMainThreadBehaviour(0, () => { });
+            behaviourActions.AddMainThreadBehaviour(0, () =>
+            {
+                path = parameters[0] as Path<MapNode>;
+                step = 0;
+            });
 
             behaviourActions.SetTransitionBehaviour(() =>
             {
@@ -37,20 +40,22 @@ namespace RTS.Model
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            MapNode agentPosition = (parameters[0] as Func<MapNode>)?.Invoke();
+            TravelerAgent travelerAgent = (parameters[0] as Func<TravelerAgent>)?.Invoke();
 
             BehaviourActions behaviourActions = new BehaviourActions();
             behaviourActions.AddMainThreadBehaviour(0,
-                () =>
-                {
-                    agentPosition.SetCoordinate(path.nodes[step].GetCoordinate());
-                    step++;
-                });
+            () =>
+            {
+                if (step >= path.nodes.Count) return;
+
+                travelerAgent.agentPosition = travelerAgent.CurrentPath[step];
+                step++;
+            });
 
             behaviourActions.SetTransitionBehaviour(() =>
             {
-                // if (Vector3.Distance(agentPosition.position, targetTransform.position) < proximityThreshold)
-                //     OnFlag?.Invoke(TravelerAgent.Flags.OnTargetReach);
+                if (travelerAgent.agentPosition == travelerAgent.CurrentPath[^1])
+                    OnFlag?.Invoke(TravelerAgent.Flags.OnTargetReach);
             });
 
             return behaviourActions;

@@ -1,11 +1,7 @@
 namespace RTS.Model
 {
-    public class HeadQuarters : IMapEntity
+    public class HeadQuarters : MapEntity
     {
         public int heldResources;
-        public void Interact()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using AI_View.Pathfinding;
 using RTS.Model;
@@ -15,44 +16,68 @@ public class GameView : MonoBehaviour
     [SerializeField] private TMP_InputField height;
     [SerializeField] private TMP_InputField minesQty;
     [SerializeField] private GameObject panel;
+    [SerializeField] private GameObject hud;
+    [SerializeField] private TextMeshProUGUI goldText;
 
     [SerializeField] private GameObject villagerPrefab;
     [SerializeField] private GameObject convoyPrefab;
+    [SerializeField] private float tickDelay;
 
     private Dictionary<TravelerAgent, TravelerView> agentToTravelerView = new Dictionary<TravelerAgent, TravelerView>();
     private Game game;
+    private Coroutine gameCoroutine;
 
     public void InitGame()
     {
         game = new Game(int.Parse(width.text), int.Parse(height.text), int.Parse(minesQty.text));
         gridView.Init(game.map);
         panel.SetActive(false);
-        
+        hud.SetActive(true);
+
         foreach (TravelerAgent agent in game.villagers)
         {
             GameObject villager = Instantiate(villagerPrefab,
-                gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             agentToTravelerView.Add(agent, villager.GetComponent<TravelerView>());
         }
 
         foreach (TravelerAgent agent in game.convoys)
         {
             GameObject convoy = Instantiate(convoyPrefab,
-                gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             agentToTravelerView.Add(agent, convoy.GetComponent<TravelerView>());
+        }
+
+        if (gameCoroutine != null)
+            StopCoroutine(gameCoroutine);
+
+        gameCoroutine = StartCoroutine(GameUpdate());
+    }
+
+    private IEnumerator GameUpdate()
+    {
+        while (game != null)
+        {
+            game.Tick(Time.deltaTime);
+            goldText.text = $"Gold: {game.map.headquarters.heldResources}";
+            
+            foreach (TravelerAgent agent in agentToTravelerView.Keys)
+            {
+                Debug.Log($"Villager Position: ({agent.agentPosition.GetCoordinate().X}, {agent.agentPosition.GetCoordinate().Y})");
+                agentToTravelerView[agent].SetPosition(gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()));
+            }
+
+            yield return new WaitForSeconds(tickDelay);
         }
     }
 
-    public void Update()
+    public void AddVillager()
     {
-        if (game == null)
-            return;
+        game.TryBuyVillager();
+    }
 
-        game.Tick(Time.deltaTime);
-        foreach (TravelerAgent agent in agentToTravelerView.Keys)
-        {
-            Debug.Log($"Villager Closest Mine:{agent.closestMineNode}");
-            agentToTravelerView[agent].SetPosition(gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()));
-        }
+    public void AddConvoy()
+    {
+        game.TryBuyConvoy();
     }
 }

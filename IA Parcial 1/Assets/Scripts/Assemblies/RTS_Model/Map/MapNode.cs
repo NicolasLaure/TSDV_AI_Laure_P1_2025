@@ -5,6 +5,6 @@ namespace RTS.Model
 {
     public class MapNode : Node<Vec2Int>
     {
-        public IMapEntity heldEntity;
+        public MapEntity heldEntity;
     }
 }

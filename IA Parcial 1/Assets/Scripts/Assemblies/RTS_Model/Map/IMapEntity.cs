@@ -1,7 +1,6 @@
 namespace RTS.Model
 {
-    public interface IMapEntity
+    public class MapEntity
     {
-        public void Interact();
     }
 }

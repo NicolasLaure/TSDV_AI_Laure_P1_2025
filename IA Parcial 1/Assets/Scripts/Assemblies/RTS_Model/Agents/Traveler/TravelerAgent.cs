@@ -10,14 +10,17 @@ namespace RTS.Model
             WalkTowardsMine,
             WalkTowardsBase,
             Work,
-            Unload
+            Unload,
+            WaitFood
         }
 
         public enum Flags
         {
             OnTargetReach,
             OnBagFull,
-            OnBagEmpty
+            OnBagEmpty,
+            OnMineEmpty,
+            OnHungry
         }
 
         protected FSM<States, Flags> fsm;
@@ -39,7 +42,8 @@ namespace RTS.Model
         protected Map map;
 
         protected AStarPathfinder<MapNode> pathfinder;
-        protected List<MapNode> currentPath = new List<MapNode>();
+        public Path<MapNode> currentPath = new Path<MapNode>();
+        public List<MapNode> CurrentPath => currentPath.nodes;
 
         public TravelerAgent(Map map, MapNode startPos)
         {

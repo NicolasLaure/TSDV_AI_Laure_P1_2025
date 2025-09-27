@@ -21,8 +21,12 @@ public class FSM<StateType, FlagType>
     private BehaviourActions GetCurrentTickBehaviour => states[currentState].GetOnTickBehaviours(behaviourTickParams[currentState]?.Invoke());
     private BehaviourActions GetCurrentExitBehaviour => states[currentState].GetOnExitBehaviours(behaviourExitParams[currentState]?.Invoke());
 
+    private StateType defaultState;
+
     public FSM(StateType defaultState)
     {
+        this.defaultState = defaultState;
+
         states = new Dictionary<int, State>();
         transitions = new (int, Action)[Enum.GetValues(typeof(StateType)).Length, Enum.GetValues(typeof(FlagType)).Length];
         for (int i = 0; i < transitions.GetLength(0); i++)
@@ -36,7 +40,10 @@ public class FSM<StateType, FlagType>
         behaviourEnterParams = new Dictionary<int, Func<object[]>>();
         behaviourTickParams = new Dictionary<int, Func<object[]>>();
         behaviourExitParams = new Dictionary<int, Func<object[]>>();
+    }
 
+    public void Init()
+    {
         ForceState(defaultState);
     }
 
@@ -65,6 +72,7 @@ public class FSM<StateType, FlagType>
     private void ForceState(StateType state)
     {
         currentState = Convert.ToInt32(state);
+        ExecuteBehaviour(GetCurrentEnterBehaviour);
     }
 
     public void SetTransition(StateType originalState, FlagType flag, StateType destinationState, Action onTransition = null)
@@ -143,7 +151,7 @@ public class FSM<StateType, FlagType>
             return;
 
         object[] parameters = receivedParams.Invoke();
-        
+
         List<Type> receivedParametersTypes = new List<Type>();
         foreach (object parameter in parameters)
         {

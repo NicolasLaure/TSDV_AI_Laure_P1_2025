@@ -102,14 +102,6 @@ namespace AI_Model.Pathfinding
             }
 
             path.Reverse();
-            string pathString = "Path: ";
-            foreach (NodeType node in path)
-            {
-                pathString += node.GetCoordinate().ToString() + ", ";
-            }
-
-            Logger.Log(pathString);
-
             return path;
         }
 

@@ -27,6 +27,11 @@ namespace RTS.Model
             PopulateMines(minesQty);
         }
 
+        public void Tick()
+        {
+            ClearEmptyMines();
+        }
+
         public void PopulateMines(int minesQty)
         {
             for (int i = 0; i < minesQty; i++)
@@ -60,11 +65,29 @@ namespace RTS.Model
             mineToNode.Add(newMine, mineNode);
         }
 
+        private void ClearEmptyMines()
+        {
+            List<Mine> minesToRemove = new List<Mine>();
+            foreach (Mine mine in mineToNode.Keys)
+            {
+                if (mine.ShouldRemove)
+                    minesToRemove.Add(mine);
+            }
+
+            foreach (Mine mine in minesToRemove)
+            {
+                mineToNode.Remove(mine);
+            }
+
+            voronoi.Bake(mineToNode.Values);
+        }
+
         public void RemoveMine(Mine mine)
         {
             mineToNode.Remove(mine);
             voronoi.Bake(mineToNode.Values);
         }
+
 
         public List<MapNode> GetMineLocations()
         {

@@ -8,7 +8,7 @@ namespace RTS.Model
     {
         public override Type[] OnTickParametersTypes => new Type[]
         {
-            typeof(IMapEntity),
+            typeof(HeadQuarters),
             typeof(Inventory),
             typeof(float)
         };
@@ -24,9 +24,9 @@ namespace RTS.Model
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            Inventory inventory = parameters[0] as Inventory;
-            float unloadSpeed = (float)parameters[1];
-            HeadQuarters hq = parameters[2] as HeadQuarters;
+            HeadQuarters hq = parameters[0] as HeadQuarters;
+            Inventory inventory = parameters[1] as Inventory;
+            float unloadSpeed = (float)parameters[2];
 
             BehaviourActions behaviourActions = new BehaviourActions();
             behaviourActions.AddMainThreadBehaviour(0, () =>

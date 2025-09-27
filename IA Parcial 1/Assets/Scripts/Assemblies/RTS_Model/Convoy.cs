@@ -14,17 +14,12 @@ namespace RTS.Model
 
         protected override void AddStates()
         {
-            Path<MapNode> path = new Path<MapNode>
-            {
-                nodes = currentPath
-            };
-
             fsm.AddState<WalkState>(States.WalkTowardsBase,
-                onEnterParams: () => new object[] { path },
+                onEnterParams: () => new object[] { currentPath },
                 onTickParams: () => new object[] { agentPosition });
 
             fsm.AddState<WalkState>(States.WalkTowardsMine,
-                onEnterParams: () => new object[] { path },
+                onEnterParams: () => new object[] { currentPath },
                 onTickParams: () => new object[] { agentPosition });
 
             fsm.AddState<MineState>(States.Work,
@@ -45,7 +40,7 @@ namespace RTS.Model
                 () =>
                 {
                     closestMineNode = FindClosestMine();
-                    currentPath = pathfinder.FindPath(agentPosition, closestMineNode);
+                    currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
                     /*Debug.Log("BagFull Returning To Base");*/
                 });
             fsm.SetTransition(States.WalkTowardsBase, Flags.OnTargetReach, States.Unload,
@@ -56,7 +51,7 @@ namespace RTS.Model
             fsm.SetTransition(States.Unload, Flags.OnBagEmpty, States.WalkTowardsMine,
                 () =>
                 {
-                    currentPath = pathfinder.FindPath(agentPosition, map.hqNode);
+                    currentPath.nodes = pathfinder.FindPath(agentPosition, map.hqNode);
                     /*Debug.Log("Bag Empty Returning to mine");*/
                 });
         }
