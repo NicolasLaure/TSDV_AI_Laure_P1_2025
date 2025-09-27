@@ -11,7 +11,6 @@ namespace RTS.Model
             WalkTowardsBase,
             Work,
             Unload,
-            Wait
         }
 
         public enum Flags
@@ -20,7 +19,6 @@ namespace RTS.Model
             OnBagFull,
             OnBagEmpty,
             OnMineEmpty,
-            OnHungry
         }
 
         protected FSM<States, Flags> fsm;

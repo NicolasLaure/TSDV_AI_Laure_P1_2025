@@ -9,7 +9,11 @@ namespace RTS.Model
         private float sleepDuration = 0.1f;
 
         private int maxFood = 3;
-        private int currentFood;
+
+        public int MaxFood => maxFood;
+        public int CurrentFood => inventory.food;
+
+        public Action onFoodUpdate;
 
         public VillagerAgent(Map map, MapNode startPos) : base(map, startPos)
         {
@@ -19,7 +23,6 @@ namespace RTS.Model
             closestMineNode = FindClosestMine();
             currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
             fsm.Init();
-            currentFood = maxFood;
         }
 
         protected override void AddStates()
@@ -34,9 +37,10 @@ namespace RTS.Model
             onEnterParams: () => new object[] { currentPath },
             onTickParams: () => new object[] { agentFunc });
 
-            fsm.AddState<MineState>(States.Work,
+            Func<Action> onFoodFunc = () => onFoodUpdate;
+            fsm.AddState<MineState>(States.Work, onEnterParams: () => new object[] { closestMineNode.heldEntity },
             onTickParams: () => new object[]
-                { closestMineNode.heldEntity, inventory, miningSpeed });
+                { inventory, miningSpeed, onFoodFunc });
 
             fsm.AddState<UnloadState>(States.Unload, onTickParams: () => new object[]
             {

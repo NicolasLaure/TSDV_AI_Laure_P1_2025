@@ -34,14 +34,14 @@ public class GameView : MonoBehaviour
         panel.SetActive(false);
         hud.SetActive(true);
 
-        foreach (WorkerAgent agent in game.villagers)
+        foreach (VillagerAgent agent in game.villagers)
         {
-            GameObject villager = Instantiate(villagerPrefab,
-            gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            GameObject villager = Instantiate(villagerPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            villager.GetComponent<VillagerView>().villagerAgent = agent;
             agentToTravelerView.Add(agent, villager.GetComponent<TravelerView>());
         }
 
-        foreach (WorkerAgent agent in game.convoys)
+        foreach (Convoy agent in game.convoys)
         {
             GameObject convoy = Instantiate(convoyPrefab,
             gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
@@ -60,11 +60,16 @@ public class GameView : MonoBehaviour
         {
             game.Tick(Time.deltaTime);
             goldText.text = $"Gold: {game.map.headquarters.heldResources}";
-            
+
             foreach (WorkerAgent agent in agentToTravelerView.Keys)
             {
-                Debug.Log($"Villager Position: ({agent.agentPosition.GetCoordinate().X}, {agent.agentPosition.GetCoordinate().Y})");
+                Debug.Log($"Worker Food: {((VillagerAgent)agent).CurrentFood}");
                 agentToTravelerView[agent].SetPosition(gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()));
+            }
+
+            foreach (Mine mine in game.map.GetMines())
+            {
+                Debug.Log($"Mine has: {mine.workingVillagers} workers");
             }
 
             yield return new WaitForSeconds(tickDelay);

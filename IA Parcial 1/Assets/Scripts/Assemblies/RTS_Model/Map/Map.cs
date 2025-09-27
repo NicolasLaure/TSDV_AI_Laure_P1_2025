@@ -112,5 +112,15 @@ namespace RTS.Model
 
             return mineLocations;
         }
+        public List<Mine> GetMines()
+        {
+            List<Mine> mines = new List<Mine>();
+            foreach (Mine mine in mineToNode.Keys)
+            {
+                mines.Add(mine);
+            }
+
+            return mines;
+        }
     }
 }

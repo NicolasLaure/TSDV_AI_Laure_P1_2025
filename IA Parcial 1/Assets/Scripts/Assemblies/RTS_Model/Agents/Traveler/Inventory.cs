@@ -6,6 +6,13 @@ namespace RTS.Model
     public class Inventory
     {
         public int heldResources = 0;
-        public int size = 10;
+        public int size = 15;
+        public int maxFood = 3;
+        public int food;
+
+        public Inventory()
+        {
+            food = maxFood;
+        }
     }
 }

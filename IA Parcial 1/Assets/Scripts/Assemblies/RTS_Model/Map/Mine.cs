@@ -7,8 +7,9 @@ namespace RTS.Model
         public int resources = 25;
         public int food = 0;
         public bool ShouldRemove => resources == 0;
+        public int workingVillagers = 0;
 
-        public bool TryExtract()
+        public bool CanExtract()
         {
             if (resources > 0)
             {
@@ -19,18 +20,27 @@ namespace RTS.Model
             return false;
         }
 
+        public void Extract()
+        {
+            resources--;
+        }
+
         public void DepositFood(int quantity)
         {
             food += quantity;
         }
 
-        public bool TryGetFood()
+        public int TryGetFood(int maxFood)
         {
-            if (food <= 0)
-                return false;
+            if (food >= maxFood)
+            {
+                food -= maxFood;
+                return maxFood;
+            }
 
-            food--;
-            return true;
+            int aux = food;
+            food = 0;
+            return aux;
         }
     }
 }
