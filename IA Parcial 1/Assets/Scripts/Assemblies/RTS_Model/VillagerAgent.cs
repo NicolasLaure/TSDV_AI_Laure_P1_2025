@@ -11,7 +11,7 @@ namespace RTS.Model
         private int maxFood = 3;
         private int currentFood;
 
-       public VillagerAgent(Map map, MapNode startPos) : base(map, startPos)
+        public VillagerAgent(Map map, MapNode startPos) : base(map, startPos)
         {
             fsm = new FSM<States, Flags>(States.WalkTowardsMine);
             AddStates();
@@ -37,6 +37,7 @@ namespace RTS.Model
             fsm.AddState<MineState>(States.Work,
             onTickParams: () => new object[]
                 { closestMineNode.heldEntity, inventory, miningSpeed });
+
             fsm.AddState<UnloadState>(States.Unload, onTickParams: () => new object[]
             {
                 map.headquarters, inventory, unloadingSpeed
@@ -54,6 +55,13 @@ namespace RTS.Model
             () =>
             {
                 currentPath.nodes = pathfinder.FindPath(agentPosition, map.hqNode);
+                /*Debug.Log("BagFull Returning To Base");*/
+            });
+            fsm.SetTransition(States.Work, Flags.OnMineEmpty, States.WalkTowardsMine,
+            () =>
+            {
+                closestMineNode = FindClosestMine();
+                currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
                 /*Debug.Log("BagFull Returning To Base");*/
             });
             fsm.SetTransition(States.WalkTowardsBase, Flags.OnTargetReach, States.Unload,
