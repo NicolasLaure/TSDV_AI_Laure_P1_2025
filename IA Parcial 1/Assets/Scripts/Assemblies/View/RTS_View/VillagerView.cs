@@ -5,6 +5,6 @@ namespace RTS.View
 {
     public class VillagerView : MonoBehaviour
     {
-        Villager villager;
+        VillagerAgent villagerAgent;
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using AI_Model.Pathfinding;
 using FSM;
-using UnityEngine;
 
 namespace RTS.Model
 {
@@ -14,7 +13,7 @@ namespace RTS.Model
 
         public override Type[] OnTickParametersTypes => new Type[]
         {
-            typeof(Func<TravelerAgent>),
+            typeof(Func<WorkerAgent>),
         };
 
         private Path<MapNode> path;
@@ -40,7 +39,7 @@ namespace RTS.Model
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            TravelerAgent travelerAgent = (parameters[0] as Func<TravelerAgent>)?.Invoke();
+            WorkerAgent workerAgent = (parameters[0] as Func<WorkerAgent>)?.Invoke();
 
             BehaviourActions behaviourActions = new BehaviourActions();
             behaviourActions.AddMainThreadBehaviour(0,
@@ -48,14 +47,14 @@ namespace RTS.Model
             {
                 if (step >= path.nodes.Count) return;
 
-                travelerAgent.agentPosition = travelerAgent.CurrentPath[step];
+                workerAgent.agentPosition = workerAgent.CurrentPath[step];
                 step++;
             });
 
             behaviourActions.SetTransitionBehaviour(() =>
             {
-                if (travelerAgent.agentPosition == travelerAgent.CurrentPath[^1])
-                    OnFlag?.Invoke(TravelerAgent.Flags.OnTargetReach);
+                if (workerAgent.agentPosition == workerAgent.CurrentPath[^1])
+                    OnFlag?.Invoke(WorkerAgent.Flags.OnTargetReach);
             });
 
             return behaviourActions;

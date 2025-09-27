@@ -4,13 +4,19 @@ namespace RTS.Model
 {
     public class Mine : MapEntity
     {
-        public int resources = 10;
+        public int resources = 25;
         public int food = 0;
         public bool ShouldRemove => resources == 0;
 
-        public void Extract()
+        public bool TryExtract()
         {
-            resources--;
+            if (resources > 0)
+            {
+                resources--;
+                return true;
+            }
+
+            return false;
         }
 
         public void DepositFood(int quantity)

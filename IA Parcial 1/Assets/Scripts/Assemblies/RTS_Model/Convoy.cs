@@ -3,7 +3,7 @@ using AI_Model.Pathfinding;
 
 namespace RTS.Model
 {
-    public sealed class Convoy : TravelerAgent
+    public sealed class Convoy : WorkerAgent
     {
         public Convoy(Map map, MapNode startPos) : base(map, startPos)
         {

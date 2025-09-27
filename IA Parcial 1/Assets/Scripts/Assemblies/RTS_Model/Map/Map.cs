@@ -16,6 +16,9 @@ namespace RTS.Model
 
         private Dictionary<Mine, MapNode> mineToNode = new Dictionary<Mine, MapNode>();
 
+        public Action<MapNode> onMineRemove;
+        public Action onBake;
+
         public Map(int width, int height, int minesQty)
         {
             grid = new Grid<MapNode>(width, height);
@@ -37,7 +40,7 @@ namespace RTS.Model
             for (int i = 0; i < minesQty; i++)
                 AddRandomMine();
 
-            voronoi.Bake(mineToNode.Values);
+            Bake();
         }
 
         public void AddRandomMine()
@@ -74,20 +77,30 @@ namespace RTS.Model
                     minesToRemove.Add(mine);
             }
 
+            if (minesToRemove.Count == 0)
+                return;
+            
             foreach (Mine mine in minesToRemove)
             {
+                onMineRemove?.Invoke(mineToNode[mine]);
                 mineToNode.Remove(mine);
             }
 
-            voronoi.Bake(mineToNode.Values);
+            Bake();
         }
 
         public void RemoveMine(Mine mine)
         {
+            onMineRemove?.Invoke(mineToNode[mine]);
             mineToNode.Remove(mine);
-            voronoi.Bake(mineToNode.Values);
+            Bake();
         }
 
+        private void Bake()
+        {
+            voronoi.Bake(mineToNode.Values);
+            onBake?.Invoke();
+        }
 
         public List<MapNode> GetMineLocations()
         {

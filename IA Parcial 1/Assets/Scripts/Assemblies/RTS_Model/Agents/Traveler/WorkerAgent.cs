@@ -3,7 +3,7 @@ using AI_Model.Pathfinding;
 
 namespace RTS.Model
 {
-    public abstract class TravelerAgent
+    public abstract class WorkerAgent
     {
         public enum States
         {
@@ -11,7 +11,7 @@ namespace RTS.Model
             WalkTowardsBase,
             Work,
             Unload,
-            WaitFood
+            Wait
         }
 
         public enum Flags
@@ -45,7 +45,7 @@ namespace RTS.Model
         public Path<MapNode> currentPath = new Path<MapNode>();
         public List<MapNode> CurrentPath => currentPath.nodes;
 
-        public TravelerAgent(Map map, MapNode startPos)
+        public WorkerAgent(Map map, MapNode startPos)
         {
             this.map = map;
             pathfinder = new AStarPathfinder<MapNode>(map.grid);

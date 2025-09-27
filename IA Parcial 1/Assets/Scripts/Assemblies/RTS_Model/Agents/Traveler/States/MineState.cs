@@ -34,18 +34,20 @@ namespace RTS.Model
                 if (Time.time - startTime >= miningSpeed)
                 {
                     startTime = Time.time;
-                    mine.Extract();
-                    inventory.heldResources = Mathf.Clamp(inventory.heldResources + 1, 0, inventory.size);
+                    if (mine.TryExtract())
+                    {
+                        inventory.heldResources = Mathf.Clamp(inventory.heldResources + 1, 0, inventory.size);
+                    }
                 }
             });
 
             behaviourActions.SetTransitionBehaviour(() =>
             {
                 if (inventory.heldResources == inventory.size)
-                    OnFlag?.Invoke(TravelerAgent.Flags.OnBagFull);
+                    OnFlag?.Invoke(WorkerAgent.Flags.OnBagFull);
 
                 if (mine.ShouldRemove)
-                    OnFlag?.Invoke(TravelerAgent.Flags.OnMineEmpty);
+                    OnFlag?.Invoke(WorkerAgent.Flags.OnMineEmpty);
             });
 
             return behaviourActions;

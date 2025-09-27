@@ -4,14 +4,14 @@ using AI_Model.Pathfinding;
 
 namespace RTS.Model
 {
-    public sealed class Villager : TravelerAgent
+    public sealed class VillagerAgent : WorkerAgent
     {
         private float sleepDuration = 0.1f;
 
         private int maxFood = 3;
         private int currentFood;
 
-        public Villager(Map map, MapNode startPos) : base(map, startPos)
+       public VillagerAgent(Map map, MapNode startPos) : base(map, startPos)
         {
             fsm = new FSM<States, Flags>(States.WalkTowardsMine);
             AddStates();
@@ -24,7 +24,7 @@ namespace RTS.Model
 
         protected override void AddStates()
         {
-            Func<TravelerAgent> agentFunc = () => this;
+            Func<WorkerAgent> agentFunc = () => this;
 
             fsm.AddState<WalkState>(States.WalkTowardsBase,
             onEnterParams: () => new object[] { currentPath },

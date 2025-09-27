@@ -42,7 +42,7 @@ namespace RTS.Model
             behaviourActions.SetTransitionBehaviour(() =>
             {
                 if (inventory.heldResources == 0)
-                    OnFlag?.Invoke(TravelerAgent.Flags.OnBagEmpty);
+                    OnFlag?.Invoke(WorkerAgent.Flags.OnBagEmpty);
             });
 
             return behaviourActions;

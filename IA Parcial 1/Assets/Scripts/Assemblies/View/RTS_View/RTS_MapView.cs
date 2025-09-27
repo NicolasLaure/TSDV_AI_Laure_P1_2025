@@ -40,20 +40,22 @@ namespace RTS.View
 
             AddHeadQuarters(map.hqNode);
             AddMines(map.GetMineLocations());
-            foreach (MapNode landmark in map.voronoi.Landmarks)
-                PaintNodes(map.voronoi.GetLandmarkNodes(landmark));
+
+            PaintVoronoiAreas();
+            map.onMineRemove += RemoveMine;
+            map.onBake += PaintVoronoiAreas;
         }
 
         public Vector3 ToGridAligned(Vec2Int nodePosition)
         {
             return new Vector3(nodePosition.X * (cubeSize.x + GridSpacing / 2),
-                nodePosition.Y * (cubeSize.y + GridSpacing / 2));
+            nodePosition.Y * (cubeSize.y + GridSpacing / 2));
         }
 
         public Vector3 ToEntityGridAligned(Vec2Int nodePosition)
         {
             return new Vector3(nodePosition.X * (cubeSize.x + GridSpacing / 2),
-                nodePosition.Y * (cubeSize.y + GridSpacing / 2), -1.0f);
+            nodePosition.Y * (cubeSize.y + GridSpacing / 2), -1.0f);
         }
 
         public void PaintPath(List<MapNode> path, bool shouldDraw)
@@ -85,6 +87,18 @@ namespace RTS.View
             nodeToHeldGameObject.Add(mineLocation, mineObject);
         }
 
+        public void RemoveMine(MapNode mine)
+        {
+            if (!nodeToHeldGameObject.ContainsKey(mine))
+                return;
+
+            Destroy(nodeToHeldGameObject[mine]);
+            nodeToHeldGameObject.Remove(mine);
+
+            foreach (MapNode landmark in map.voronoi.Landmarks)
+                PaintNodes(map.voronoi.GetLandmarkNodes(landmark));
+        }
+
         public void AddHeadQuarters(MapNode hqLocation)
         {
             Vector3 hqPos = ToEntityGridAligned(hqLocation.GetCoordinate());
@@ -101,6 +115,12 @@ namespace RTS.View
             {
                 nodeToView[node].SetAreaColor(randomColor);
             }
+        }
+
+        private void PaintVoronoiAreas()
+        {
+            foreach (MapNode landmark in map.voronoi.Landmarks)
+                PaintNodes(map.voronoi.GetLandmarkNodes(landmark));
         }
     }
 }
