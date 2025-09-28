@@ -34,8 +34,8 @@ namespace RTS.Model
                 if (Time.time - startTime >= unloadSpeed)
                 {
                     startTime = Time.time;
-                    inventory.heldResources = Mathf.Clamp(inventory.heldResources - 1, 0, inventory.size);
-                    mapEntity.AddResources(1);
+                    mapEntity.AddResources(inventory.heldResources);
+                    inventory.heldResources = 0;
                 }
             });
 

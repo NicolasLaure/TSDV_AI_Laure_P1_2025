@@ -32,7 +32,7 @@ namespace RTS.Model
             onEnterParams: () => new object[] { closestMineNode, currentPath },
             onTickParams: () => new object[] { agentFunc });
 
-            fsm.AddState<GatherFood>(States.Work, onEnterParams: () => new object[] { map.headquarters },
+            fsm.AddState<GatherFoodState>(States.Work, onEnterParams: () => new object[] { map.headquarters },
             onTickParams: () => new object[] { inventory, miningSpeed });
             
             fsm.AddState<UnloadState>(States.Unload,

@@ -47,7 +47,7 @@ namespace RTS.Model
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            Inventory inventory = parameters[0] as Inventory;
+            Inventory inventory = (Inventory)parameters[0];
             float miningSpeed = (float)parameters[1];
             Action onFoodUpdated = ((Func<Action>)parameters[2]).Invoke();
 
@@ -60,15 +60,18 @@ namespace RTS.Model
                     if (inventory.food <= 0)
                     {
                         inventory.food = mine.TryGetFood(inventory.maxFood);
-                        return;
+                        if (inventory.food != 0)
+                            onFoodUpdated?.Invoke();
                     }
-
-                    if (mine.CanExtract() && inventory.food > 0)
+                    else
                     {
-                        mine.Extract();
-                        inventory.heldResources = Mathf.Clamp(inventory.heldResources + 1, 0, inventory.size);
-                        inventory.food--;
-                        onFoodUpdated?.Invoke();
+                        if (mine.CanExtract())
+                        {
+                            mine.Extract();
+                            inventory.heldResources = Mathf.Clamp(inventory.heldResources + 1, 0, inventory.size);
+                            inventory.food = Mathf.Clamp(inventory.food - 1, 0, inventory.maxFood);
+                            onFoodUpdated?.Invoke();
+                        }
                     }
                 }
             });

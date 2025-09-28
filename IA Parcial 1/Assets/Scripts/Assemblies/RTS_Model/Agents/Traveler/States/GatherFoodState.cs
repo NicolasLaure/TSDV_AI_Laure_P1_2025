@@ -3,7 +3,7 @@ using FSM;
 using RTS.Model;
 using UnityEngine;
 
-public class GatherFood : State
+public class GatherFoodState : State
 {
     public override Type[] OnEnterParametersTypes => new Type[]
     {
