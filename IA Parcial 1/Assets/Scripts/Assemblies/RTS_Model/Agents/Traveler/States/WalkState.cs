@@ -8,6 +8,7 @@ namespace RTS.Model
     {
         public override Type[] OnEnterParametersTypes => new Type[]
         {
+            typeof(MapNode),
             typeof(Path<MapNode>)
         };
 
@@ -16,6 +17,7 @@ namespace RTS.Model
             typeof(Func<WorkerAgent>),
         };
 
+        private MapNode target;
         private Path<MapNode> path;
         private int step;
 
@@ -24,7 +26,8 @@ namespace RTS.Model
             BehaviourActions behaviourActions = new BehaviourActions();
             behaviourActions.AddMainThreadBehaviour(0, () =>
             {
-                path = parameters[0] as Path<MapNode>;
+                target = parameters[0] as MapNode;
+                path = parameters[1] as Path<MapNode>;
                 step = 0;
             });
 
@@ -55,6 +58,9 @@ namespace RTS.Model
             {
                 if (workerAgent.agentPosition == workerAgent.CurrentPath[^1])
                     OnFlag?.Invoke(WorkerAgent.Flags.OnTargetReach);
+                
+                if(target.heldEntity == null)
+                    OnFlag?.Invoke(WorkerAgent.Flags.OnMineEmpty);
             });
 
             return behaviourActions;

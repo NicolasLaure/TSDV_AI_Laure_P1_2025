@@ -17,6 +17,7 @@ namespace RTS.Model
             map = new Map(width, height, minesQty);
 
             villagers.Add(new VillagerAgent(map, map.grid.GetNeighbours(map.hqNode)[0]));
+            convoys.Add(new Convoy(map, map.grid.GetNeighbours(map.hqNode)[1]));
         }
 
         public void Tick(float delta)

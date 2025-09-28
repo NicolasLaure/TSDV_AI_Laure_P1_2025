@@ -79,7 +79,7 @@ namespace RTS.Model
 
             if (minesToRemove.Count == 0)
                 return;
-            
+
             foreach (Mine mine in minesToRemove)
             {
                 onMineRemove?.Invoke(mineToNode[mine]);
@@ -112,6 +112,7 @@ namespace RTS.Model
 
             return mineLocations;
         }
+
         public List<Mine> GetMines()
         {
             List<Mine> mines = new List<Mine>();
@@ -121,6 +122,14 @@ namespace RTS.Model
             }
 
             return mines;
+        }
+
+        public MapNode GetNode(Mine entity)
+        {
+            if (mineToNode.ContainsKey(entity))
+                return mineToNode[entity];
+            
+            return null;
         }
     }
 }

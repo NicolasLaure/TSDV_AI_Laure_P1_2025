@@ -8,6 +8,7 @@ namespace RTS.Model
         public int food = 0;
         public bool ShouldRemove => resources == 0;
         public int workingVillagers = 0;
+        public int suppliers = 0;
 
         public bool CanExtract()
         {
@@ -41,6 +42,11 @@ namespace RTS.Model
             int aux = food;
             food = 0;
             return aux;
+        }
+
+        public override void AddResources(int qty)
+        {
+            food += qty;
         }
     }
 }

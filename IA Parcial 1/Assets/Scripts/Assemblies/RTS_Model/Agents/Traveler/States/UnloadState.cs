@@ -8,7 +8,7 @@ namespace RTS.Model
     {
         public override Type[] OnTickParametersTypes => new Type[]
         {
-            typeof(HeadQuarters),
+            typeof(MapEntity),
             typeof(Inventory),
             typeof(float)
         };
@@ -24,7 +24,7 @@ namespace RTS.Model
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            HeadQuarters hq = parameters[0] as HeadQuarters;
+            MapEntity mapEntity = parameters[0] as MapEntity;
             Inventory inventory = parameters[1] as Inventory;
             float unloadSpeed = (float)parameters[2];
 
@@ -35,7 +35,7 @@ namespace RTS.Model
                 {
                     startTime = Time.time;
                     inventory.heldResources = Mathf.Clamp(inventory.heldResources - 1, 0, inventory.size);
-                    hq.heldResources++;
+                    mapEntity.AddResources(1);
                 }
             });
 

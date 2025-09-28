@@ -63,7 +63,9 @@ public class GameView : MonoBehaviour
 
             foreach (WorkerAgent agent in agentToTravelerView.Keys)
             {
-                Debug.Log($"Worker Food: {((VillagerAgent)agent).CurrentFood}");
+                if ((agent as VillagerAgent) != null)
+                    Debug.Log($"Worker Food: {((VillagerAgent)agent).CurrentFood}");
+                
                 agentToTravelerView[agent].SetPosition(gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()));
             }
 

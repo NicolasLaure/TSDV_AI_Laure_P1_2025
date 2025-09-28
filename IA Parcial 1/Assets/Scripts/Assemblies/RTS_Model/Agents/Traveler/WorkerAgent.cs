@@ -11,6 +11,7 @@ namespace RTS.Model
             WalkTowardsBase,
             Work,
             Unload,
+            Idle
         }
 
         public enum Flags

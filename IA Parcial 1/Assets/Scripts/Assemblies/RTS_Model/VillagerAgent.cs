@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using AI_Model.Pathfinding;
 
 namespace RTS.Model
 {
@@ -30,11 +28,11 @@ namespace RTS.Model
             Func<WorkerAgent> agentFunc = () => this;
 
             fsm.AddState<WalkState>(States.WalkTowardsBase,
-            onEnterParams: () => new object[] { currentPath },
+            onEnterParams: () => new object[] { map.hqNode, currentPath },
             onTickParams: () => new object[] { agentFunc });
 
             fsm.AddState<WalkState>(States.WalkTowardsMine,
-            onEnterParams: () => new object[] { currentPath },
+            onEnterParams: () => new object[] { closestMineNode, currentPath },
             onTickParams: () => new object[] { agentFunc });
 
             Func<Action> onFoodFunc = () => onFoodUpdate;
@@ -55,6 +53,14 @@ namespace RTS.Model
             {
                 /*Debug.Log("MineReached");*/
             });
+            fsm.SetTransition(States.WalkTowardsMine, Flags.OnMineEmpty, States.WalkTowardsMine,
+            () =>
+            {
+                closestMineNode = FindClosestMine();
+                currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
+                /*Debug.Log("MineReached");*/
+            });
+
             fsm.SetTransition(States.Work, Flags.OnBagFull, States.WalkTowardsBase,
             () =>
             {
