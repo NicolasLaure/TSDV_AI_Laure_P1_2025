@@ -1,7 +1,6 @@
 using System;
 using FSM;
 using RTS.Model;
-using UnityEngine;
 
 public class GatherFoodState : State
 {
@@ -14,9 +13,10 @@ public class GatherFoodState : State
     {
         typeof(Inventory),
         typeof(float),
+        typeof(float)
     };
 
-    private float startTime;
+    private float timer;
     private HeadQuarters hq;
 
     public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
@@ -25,7 +25,7 @@ public class GatherFoodState : State
         BehaviourActions behaviourActions = new BehaviourActions();
         behaviourActions.AddMainThreadBehaviour(0, () =>
         {
-            startTime = Time.time;
+            timer = 0;
             hq = receivedHQ;
         });
         return behaviourActions;
@@ -35,15 +35,17 @@ public class GatherFoodState : State
     {
         Inventory inventory = parameters[0] as Inventory;
         float miningSpeed = (float)parameters[1];
-
+        float deltaTime = (float)parameters[2];
         BehaviourActions behaviourActions = new BehaviourActions();
         behaviourActions.AddMainThreadBehaviour(0, () =>
         {
-            if (Time.time - startTime >= miningSpeed)
+            if (timer >= miningSpeed)
             {
-                startTime = Time.time;
-                inventory.heldResources = Mathf.Clamp(inventory.heldResources + hq.GetFood(), 0, inventory.size);
+                timer = 0;
+                inventory.heldResources = Math.Clamp(inventory.heldResources + hq.GetFood(), 0, inventory.size);
             }
+
+            timer += deltaTime;
         });
 
         behaviourActions.SetTransitionBehaviour(() =>

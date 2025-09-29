@@ -58,6 +58,7 @@ namespace RTS.Model
 
         public void Tick(float delta)
         {
+            this.delta = delta;
             fsm.Tick();
         }
 
@@ -73,7 +74,7 @@ namespace RTS.Model
         {
             fsm.Transition(Flags.OnAlert);
         }
-        
+
         protected void GetMinePath()
         {
             closestMineNode = FindClosestMine();

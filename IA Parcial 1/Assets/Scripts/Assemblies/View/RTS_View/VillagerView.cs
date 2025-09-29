@@ -17,7 +17,7 @@ namespace RTS.View
 
         public void UpdateFood()
         {
-            foodFill.transform.localScale = new Vector3(villagerAgent.CurrentFood / villagerAgent.MaxFood, foodFill.transform.localScale.y, 1);
+            //foodFill.transform.localScale = new Vector3(villagerAgent.CurrentFood / villagerAgent.MaxFood, foodFill.transform.localScale.y, 1);
         }
     }
 }

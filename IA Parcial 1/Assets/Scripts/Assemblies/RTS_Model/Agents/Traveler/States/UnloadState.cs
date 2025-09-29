@@ -10,15 +10,16 @@ namespace RTS.Model
         {
             typeof(MapEntity),
             typeof(Inventory),
+            typeof(float),
             typeof(float)
         };
 
-        private float startTime;
+        private float timer;
 
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
             BehaviourActions behaviourActions = new BehaviourActions();
-            behaviourActions.AddMainThreadBehaviour(0, () => { startTime = Time.time; });
+            behaviourActions.AddMainThreadBehaviour(0, () => { timer = 0; });
             return behaviourActions;
         }
 
@@ -27,16 +28,18 @@ namespace RTS.Model
             MapEntity mapEntity = parameters[0] as MapEntity;
             Inventory inventory = parameters[1] as Inventory;
             float unloadSpeed = (float)parameters[2];
-
+            float deltaTime = (float)parameters[3];
             BehaviourActions behaviourActions = new BehaviourActions();
             behaviourActions.AddMainThreadBehaviour(0, () =>
             {
-                if (Time.time - startTime >= unloadSpeed)
+                if (timer >= unloadSpeed)
                 {
-                    startTime = Time.time;
+                    timer = 0;
                     mapEntity.AddResources(inventory.heldResources);
                     inventory.heldResources = 0;
                 }
+
+                timer += deltaTime;
             });
 
             behaviourActions.SetTransitionBehaviour(() =>

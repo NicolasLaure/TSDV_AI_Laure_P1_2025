@@ -37,11 +37,11 @@ namespace RTS.Model
             onTickParams: () => new object[] { agentFunc });
 
             fsm.AddState<GatherFoodState>(States.Work, onEnterParams: () => new object[] { map.headquarters },
-            onTickParams: () => new object[] { inventory, miningSpeed });
+            onTickParams: () => new object[] { inventory, miningSpeed, delta });
 
             fsm.AddState<UnloadState>(States.Unload,
             onTickParams: () => new object[]
-                { closestMineNode.heldEntity, inventory, unloadingSpeed });
+                { closestMineNode.heldEntity, inventory, unloadingSpeed, delta });
 
             fsm.AddState<HideState>(States.Hide,
             onEnterParams: () => new object[] { map.headquarters, inventory, false });
@@ -84,8 +84,8 @@ namespace RTS.Model
             fsm.SetTransition(States.Work, Flags.OnAlert, States.SeekShelter, GetHqPath);
             fsm.SetTransition(States.WalkTowardsBase, Flags.OnAlert, States.SeekShelter, GetHqPath);
             fsm.SetTransition(States.WalkTowardsMine, Flags.OnAlert, States.SeekShelter, GetHqPath);
-            fsm.SetTransition(States.Idle, Flags.OnAlert, States.SeekShelter, () => { });
-            fsm.SetTransition(States.Unload, Flags.OnAlert, States.SeekShelter, () => { });
+            fsm.SetTransition(States.Idle, Flags.OnAlert, States.SeekShelter, GetHqPath);
+            fsm.SetTransition(States.Unload, Flags.OnAlert, States.SeekShelter, GetHqPath);
 
             fsm.SetTransition(States.SeekShelter, Flags.OnTargetReach, States.Hide, () => { });
 

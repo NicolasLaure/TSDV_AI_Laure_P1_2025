@@ -42,11 +42,11 @@ namespace RTS.Model
             Func<Action> onFoodFunc = () => onFoodUpdate;
             fsm.AddState<MineState>(States.Work, onEnterParams: () => new object[] { closestMineNode.heldEntity },
             onTickParams: () => new object[]
-                { inventory, miningSpeed, onFoodFunc });
+                { inventory, miningSpeed, onFoodFunc, delta });
 
             fsm.AddState<UnloadState>(States.Unload, onTickParams: () => new object[]
             {
-                map.headquarters, inventory, unloadingSpeed
+                map.headquarters, inventory, unloadingSpeed, delta
             });
 
             fsm.AddState<HideState>(States.Hide,
@@ -77,19 +77,13 @@ namespace RTS.Model
             fsm.SetTransition(States.Work, Flags.OnAlert, States.SeekShelter, GetHqPath);
             fsm.SetTransition(States.WalkTowardsBase, Flags.OnAlert, States.SeekShelter, GetHqPath);
             fsm.SetTransition(States.WalkTowardsMine, Flags.OnAlert, States.SeekShelter, GetHqPath);
-            fsm.SetTransition(States.Idle, Flags.OnAlert, States.SeekShelter, () => { });
-            fsm.SetTransition(States.Unload, Flags.OnAlert, States.SeekShelter, () => { });
+            fsm.SetTransition(States.Idle, Flags.OnAlert, States.SeekShelter, GetHqPath);
+            fsm.SetTransition(States.Unload, Flags.OnAlert, States.SeekShelter, GetHqPath);
 
             fsm.SetTransition(States.SeekShelter, Flags.OnTargetReach, States.Hide, () => { });
 
-            fsm.SetTransition(States.SeekShelter, Flags.OnAlert, States.WalkTowardsMine, () =>
-            {
-                currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
-            });
-            fsm.SetTransition(States.Hide, Flags.OnAlert, States.WalkTowardsMine, () =>
-            {
-                currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
-            });
+            fsm.SetTransition(States.SeekShelter, Flags.OnAlert, States.WalkTowardsMine, () => { currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode); });
+            fsm.SetTransition(States.Hide, Flags.OnAlert, States.WalkTowardsMine, () => { currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode); });
         }
     }
 }

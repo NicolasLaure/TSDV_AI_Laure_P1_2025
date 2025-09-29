@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace RTS.Model
@@ -22,11 +23,11 @@ namespace RTS.Model
 
         public void Tick(float delta)
         {
-            foreach (VillagerAgent villager in villagers)
-                villager.Tick(delta);
-
-            foreach (Convoy convoy in convoys)
-                convoy.Tick(delta);
+            ParallelOptions parallelOptions = new ParallelOptions();
+            parallelOptions.MaxDegreeOfParallelism = 32;
+            
+            Parallel.ForEach(villagers, parallelOptions, villager => { villager.Tick(delta); });
+            Parallel.ForEach(convoys, parallelOptions, convoy => { convoy.Tick(delta); });
 
             map.Tick();
         }
@@ -35,7 +36,7 @@ namespace RTS.Model
         {
             if (map.headquarters.heldResources < villagerCost)
             {
-                spawnedVillager = null;   
+                spawnedVillager = null;
                 return false;
             }
 
