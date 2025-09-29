@@ -31,6 +31,10 @@ namespace RTS.Model
             onEnterParams: () => new object[] { map.hqNode, currentPath },
             onTickParams: () => new object[] { agentFunc });
 
+            fsm.AddState<WalkState>(States.SeekShelter,
+            onEnterParams: () => new object[] { map.hqNode, currentPath },
+            onTickParams: () => new object[] { agentFunc });
+
             fsm.AddState<WalkState>(States.WalkTowardsMine,
             onEnterParams: () => new object[] { closestMineNode, currentPath },
             onTickParams: () => new object[] { agentFunc });
@@ -44,6 +48,9 @@ namespace RTS.Model
             {
                 map.headquarters, inventory, unloadingSpeed
             });
+
+            fsm.AddState<HideState>(States.Hide,
+            onEnterParams: () => new object[] { map.headquarters, inventory, true });
         }
 
         protected override void AddTransitions()
@@ -53,38 +60,35 @@ namespace RTS.Model
             {
                 /*Debug.Log("MineReached");*/
             });
-            fsm.SetTransition(States.WalkTowardsMine, Flags.OnMineEmpty, States.WalkTowardsMine,
-            () =>
-            {
-                closestMineNode = FindClosestMine();
-                currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
-                /*Debug.Log("MineReached");*/
-            });
+            fsm.SetTransition(States.WalkTowardsMine, Flags.OnMineEmpty, States.WalkTowardsMine, GetMinePath);
 
-            fsm.SetTransition(States.Work, Flags.OnBagFull, States.WalkTowardsBase,
-            () =>
-            {
-                currentPath.nodes = pathfinder.FindPath(agentPosition, map.hqNode);
-                /*Debug.Log("BagFull Returning To Base");*/
-            });
-            fsm.SetTransition(States.Work, Flags.OnMineEmpty, States.WalkTowardsMine,
-            () =>
-            {
-                closestMineNode = FindClosestMine();
-                currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
-                /*Debug.Log("BagFull Returning To Base");*/
-            });
-            fsm.SetTransition(States.WalkTowardsBase, Flags.OnTargetReach, States.Unload,
-            () =>
+            fsm.SetTransition(States.Work, Flags.OnBagFull, States.WalkTowardsBase, GetHqPath);
+
+            fsm.SetTransition(States.Work, Flags.OnMineEmpty, States.WalkTowardsMine, GetMinePath);
+
+            fsm.SetTransition(States.WalkTowardsBase, Flags.OnTargetReach, States.Unload, () =>
             {
                 /*Debug.Log("BaseReached");*/
             });
-            fsm.SetTransition(States.Unload, Flags.OnBagEmpty, States.WalkTowardsMine,
-            () =>
+
+            fsm.SetTransition(States.Unload, Flags.OnBagEmpty, States.WalkTowardsMine, GetMinePath);
+
+            //Alert
+            fsm.SetTransition(States.Work, Flags.OnAlert, States.SeekShelter, GetHqPath);
+            fsm.SetTransition(States.WalkTowardsBase, Flags.OnAlert, States.SeekShelter, GetHqPath);
+            fsm.SetTransition(States.WalkTowardsMine, Flags.OnAlert, States.SeekShelter, GetHqPath);
+            fsm.SetTransition(States.Idle, Flags.OnAlert, States.SeekShelter, () => { });
+            fsm.SetTransition(States.Unload, Flags.OnAlert, States.SeekShelter, () => { });
+
+            fsm.SetTransition(States.SeekShelter, Flags.OnTargetReach, States.Hide, () => { });
+
+            fsm.SetTransition(States.SeekShelter, Flags.OnAlert, States.WalkTowardsMine, () =>
             {
-                closestMineNode = FindClosestMine();
                 currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
-                /*Debug.Log("Bag Empty Returning to mine");*/
+            });
+            fsm.SetTransition(States.Hide, Flags.OnAlert, States.WalkTowardsMine, () =>
+            {
+                currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
             });
         }
     }

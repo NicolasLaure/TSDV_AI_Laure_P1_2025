@@ -9,6 +9,8 @@ namespace RTS.Model
         {
             WalkTowardsMine,
             WalkTowardsBase,
+            SeekShelter,
+            Hide,
             Work,
             Unload,
             Idle
@@ -20,6 +22,7 @@ namespace RTS.Model
             OnBagFull,
             OnBagEmpty,
             OnMineEmpty,
+            OnAlert
         }
 
         protected FSM<States, Flags> fsm;
@@ -65,5 +68,22 @@ namespace RTS.Model
 
         protected abstract void AddStates();
         protected abstract void AddTransitions();
+
+        public void Alert()
+        {
+            fsm.Transition(Flags.OnAlert);
+        }
+        
+        protected void GetMinePath()
+        {
+            closestMineNode = FindClosestMine();
+            currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
+            /*Debug.Log("MineReached");*/
+        }
+
+        protected void GetHqPath()
+        {
+            currentPath.nodes = pathfinder.FindPath(agentPosition, map.hqNode);
+        }
     }
 }

@@ -48,5 +48,18 @@ namespace RTS.Model
             map.headquarters.heldResources -= convoyCost;
             convoys.Add(new Convoy(map, map.grid.GetNeighbours(map.hqNode)[0]));
         }
+
+        public void Alert()
+        {
+            foreach (VillagerAgent villager in villagers)
+            {
+                villager.Alert();
+            }
+
+            foreach (Convoy convoy in convoys)
+            {
+                convoy.Alert();
+            }
+        }
     }
 }

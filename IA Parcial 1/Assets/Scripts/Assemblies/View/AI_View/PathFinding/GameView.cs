@@ -87,4 +87,9 @@ public class GameView : MonoBehaviour
     {
         game.TryBuyConvoy();
     }
+
+    public void Alert()
+    {
+        game.Alert();
+    }
 }
