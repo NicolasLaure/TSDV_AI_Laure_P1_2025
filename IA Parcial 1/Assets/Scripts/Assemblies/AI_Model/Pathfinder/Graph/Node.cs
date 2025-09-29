@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace AI_Model.Pathfinding
 {
@@ -27,6 +28,11 @@ namespace AI_Model.Pathfinding
         public EnumType GetTileType<EnumType>() where EnumType : Enum
         {
             return (EnumType)tileType;
+        }
+
+        public bool EqualsNode(INode<Coordinate> other)
+        {
+            return coordinate.Equals(other.GetCoordinate());
         }
 
         public bool IsBlocked()

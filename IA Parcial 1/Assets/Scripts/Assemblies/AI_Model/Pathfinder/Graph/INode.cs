@@ -15,6 +15,8 @@ namespace AI_Model.Pathfinding
 
         public void SetTileType<EnumType>(EnumType type) where EnumType : Enum;
         public EnumType GetTileType<EnumType>() where EnumType : Enum;
+
+        public bool EqualsNode(INode<Coordinate> other);
     }
 
     public interface IWeightedNode

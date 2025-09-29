@@ -103,8 +103,8 @@ namespace RTS.View
             Destroy(nodeToHeldGameObject[mine]);
             nodeToHeldGameObject.Remove(mine);
 
-            foreach (MapNode landmark in map.agentTypeToVoronoi[shownVoronoi].Landmarks)
-                PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark));
+            // foreach (MapNode landmark in map.agentTypeToVoronoi[shownVoronoi].Landmarks)
+            //     PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark));
         }
 
         public void AddHeadQuarters(MapNode hqLocation)
@@ -127,8 +127,10 @@ namespace RTS.View
 
         private void PaintVoronoiAreas()
         {
-            foreach (MapNode landmark in map.agentTypeToVoronoi[shownVoronoi].Landmarks)
-                PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark));
+            //map.agentTypeToVoronoi[shownVoronoi].SetLandmarkNodes();
+
+            //foreach (MapNode landmark in map.agentTypeToVoronoi[shownVoronoi].Landmarks)
+            //   PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark));
         }
 
         public void SetShownVoronoi(Type newType, Dictionary<Enum, Transitability> typeToWeight)

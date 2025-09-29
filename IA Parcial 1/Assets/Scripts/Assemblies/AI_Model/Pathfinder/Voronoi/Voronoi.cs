@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
 using AI_Model.Utilities;
+using CustomMath;
 
 namespace AI_Model.Voronoi
 {
@@ -19,66 +21,107 @@ namespace AI_Model.Voronoi
             this.graph = graph;
         }
 
+        private List<Self_Plane> _planes = new List<Self_Plane>();
+        private List<VoronoiPoint<NodeType>> _voronoiObjects;
+
         public void Bake(ICollection<NodeType> inLandMarks)
         {
             landmarks.Clear();
             landmarks.AddRange(inLandMarks);
             landMarkToNodes.Clear();
-            Dictionary<NodeType, List<NodeType>> landMarkToOpenNodes = new Dictionary<NodeType, List<NodeType>>();
-            Dictionary<NodeType, int> nodes = new Dictionary<NodeType, int>();
 
-            foreach (NodeType node in graph.nodes)
-                nodes.Add(node, -1);
+            _voronoiObjects = new List<VoronoiPoint<NodeType>>();
 
-            foreach (NodeType node in inLandMarks)
+            for (int i = 0; i < landmarks.Count; i++)
             {
-                landMarkToNodes.Add(node, new List<NodeType>());
-                landMarkToOpenNodes.Add(node, new List<NodeType>());
-                landMarkToOpenNodes[node].Add(node);
-                landMarkToNodes[node].Add(node);
+                _voronoiObjects.Add(new VoronoiPoint<NodeType>());
+
+                foreach (NodeType point in landmarks)
+                {
+                    if (landmarks[i].Equals(point))
+                        continue;
+
+                    Vec3 staticPosition = new Vec3(landmarks[i].GetCoordinate().X, landmarks[i].GetCoordinate().Y, 0.0f);
+                    Vec3 pointPosition = new Vec3(point.GetCoordinate().X, point.GetCoordinate().Y, 0.0f);
+
+                    Vec3 dir = new Vec3((staticPosition - pointPosition).normalizedVec3);
+                    Vec3 position = Vec3.Lerp(staticPosition, pointPosition, 0.5f);
+                    position.x = MathF.Ceiling(position.x);
+                    position.y = MathF.Ceiling(position.y);
+                    
+                    Self_Plane newPlane = new Self_Plane(dir, position);
+
+                    _planes.Add(newPlane);
+
+                    _voronoiObjects[i].planePositions.Add(position);
+                    _voronoiObjects[i].planes.Add(newPlane);
+                    _voronoiObjects[i].node = landmarks[i];
+                }
             }
 
-            while (landMarkToOpenNodes.Count > 0)
+            foreach (VoronoiPoint<NodeType> point in _voronoiObjects)
             {
-                List<NodeType> keysToRemove = new List<NodeType>();
-                foreach (KeyValuePair<NodeType, List<NodeType>> landMark in landMarkToOpenNodes)
-                {
-                    List<NodeType> neighbours = new List<NodeType>();
-                    foreach (NodeType openNode in landMark.Value)
-                    {
-                        foreach (NodeType neighbour in graph.GetNeighbours(openNode))
-                        {
-                            int distanceToLandmark = graph.Distance(landMark.Key, neighbour);
-                            if (nodes[neighbour] == -1 || distanceToLandmark < nodes[neighbour])
-                            {
-                                TryRemove(landMarkToNodes, neighbour);
-                                nodes.Remove(neighbour);
-                                nodes.Add(neighbour, distanceToLandmark);
-                                landMarkToNodes[landMark.Key].Add(neighbour);
-                                neighbours.Add(neighbour);
-                            }
-                        }
-                    }
-
-                    landMark.Value.Clear();
-                    landMark.Value.AddRange(neighbours);
-                    if (landMark.Value.Count == 0)
-                        keysToRemove.Add(landMark.Key);
-                }
-
-                foreach (NodeType landMark in keysToRemove)
-                {
-                    landMarkToOpenNodes.Remove(landMark);
-                }
+                CleanPlanes(point);
             }
         }
 
-        public NodeType GetClosestLandMark(NodeType point)
+        /// <summary>
+        /// Expensive Method, only call to draw in debug
+        /// </summary>
+        public void SetLandmarkNodes()
         {
-            foreach (KeyValuePair<NodeType, List<NodeType>> area in landMarkToNodes)
+            foreach (NodeType node in graph.nodes)
             {
-                if (area.Value.Contains(point))
-                    return area.Key;
+                NodeType landmark = GetClosestLandMark(node);
+
+                if (!landMarkToNodes.ContainsKey(landmark))
+                    landMarkToNodes.Add(landmark, new List<NodeType>());
+
+                landMarkToNodes[landmark].Add(node);
+            }
+        }
+
+        private void CleanPlanes(VoronoiPoint<NodeType> voronoiPoint)
+        {
+            List<Self_Plane> planesToDelete = new List<Self_Plane>();
+
+            for (int i = 0; i < voronoiPoint.planePositions.Count; i++)
+            {
+                for (int j = 0; j < voronoiPoint.planes.Count; j++)
+                {
+                    if (i != j)
+                        if (!voronoiPoint.planes[j].GetSide(voronoiPoint.planePositions[i]))
+                        {
+                            planesToDelete.Add(voronoiPoint.planes[i]);
+                            break;
+                        }
+                }
+            }
+
+            for (int i = 0; i < planesToDelete.Count; i++)
+                voronoiPoint.planes.Remove(planesToDelete[i]);
+        }
+
+        public NodeType GetClosestLandMark(NodeType pointNode)
+        {
+            Vec3 point = new Vec3(pointNode.GetCoordinate().X, pointNode.GetCoordinate().Y, 0.0f);
+
+            bool isPointOut = false;
+            foreach (VoronoiPoint<NodeType> voronoiPoint in _voronoiObjects)
+            {
+                isPointOut = false;
+                for (int i = 0; i < voronoiPoint.planes.Count; i++)
+                {
+                    if (!voronoiPoint.planes[i].GetSide(point))
+                    {
+                        isPointOut = true;
+                    }
+                }
+
+                if (isPointOut)
+                    continue;
+
+                return voronoiPoint.node;
             }
 
             return default;
