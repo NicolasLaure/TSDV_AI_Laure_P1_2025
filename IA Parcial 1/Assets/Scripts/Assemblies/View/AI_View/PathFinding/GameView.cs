@@ -30,7 +30,7 @@ public class GameView : MonoBehaviour
     public void InitGame()
     {
         game = new Game(int.Parse(width.text), int.Parse(height.text), int.Parse(minesQty.text));
-        gridView.Init(game.map);
+        gridView.Init(game.map, typeof(VillagerAgent), VillagerAgent.typeToCost);
         panel.SetActive(false);
         hud.SetActive(true);
 

@@ -1,47 +1,66 @@
+using System;
+using System.Collections.Generic;
 using AI_Model.Pathfinding;
+using RTS.Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.WSA;
 
 namespace AI_View.Pathfinding
 {
     public class NodeView : MonoBehaviour, IPointerClickHandler
     {
-        public INode node;
+        public MapNode node;
 
-        [SerializeField] private Color clearColor;
         [SerializeField] private Color blockedColor;
         [SerializeField] private Color pathColor;
-
+        [SerializeField] private List<Color> typeColors = new List<Color>();
         [SerializeField] private TextMeshPro text;
         [SerializeField] private SpriteRenderer frontSprite;
+        [SerializeField] private SpriteRenderer areaSprite;
+        [SerializeField] private float areaAlpha;
 
         private Color prevColor;
         private Color areaColor;
 
-        public void Init(INode node)
+        private Dictionary<Enum, Transitability> typeToWeight;
+        private TileType currentType;
+
+        public void Init(MapNode node, Dictionary<Enum, Transitability> typeToWeight)
         {
+            this.typeToWeight = typeToWeight;
             this.node = node;
+            currentType = node.GetTileType<TileType>();
             UpdateMaterial();
-            UpdateNumberText((node as IWeightedNode).GetWeight());
+            UpdateNumberText(typeToWeight[node.GetTileType<TileType>()].weight);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            int enumInt = (int)currentType;
+
             if (eventData.button == PointerEventData.InputButton.Left)
-                UpdateWeight(true);
+            {
+                currentType = (TileType)(enumInt + 1 < Enum.GetValues(typeof(TileType)).Length ? enumInt + 1 : 0);
+                node.SetTileType(currentType);
+                //UpdateWeight();
+                UpdateMaterial();
+            }
             else if (eventData.button == PointerEventData.InputButton.Right)
-                UpdateWeight(false);
+            {
+                currentType = (TileType)(enumInt - 1 > 0 ? enumInt - 1 : Enum.GetValues(typeof(TileType)).Length - 1);
+                node.SetTileType(currentType);
+                //UpdateWeight();
+                UpdateMaterial();
+            }
             else if (eventData.button == PointerEventData.InputButton.Middle)
                 ToggleBlock();
         }
 
-        private void UpdateWeight(bool goesUp)
+        private void UpdateWeight()
         {
-            IWeightedNode weightedNode = (node as IWeightedNode);
-            int newWeight = goesUp ? weightedNode.GetWeight() + 1 : weightedNode.GetWeight() - 1;
-            weightedNode.SetWeight(newWeight);
-            UpdateNumberText(weightedNode.GetWeight());
+            UpdateNumberText(typeToWeight[node.GetTileType<TileType>()].weight);
         }
 
         private void ToggleBlock()
@@ -55,7 +74,7 @@ namespace AI_View.Pathfinding
             if (node.IsBlocked())
                 frontSprite.color = blockedColor;
             else
-                frontSprite.color = clearColor;
+                frontSprite.color = typeColors[(int)currentType];
         }
 
         private void UpdateNumberText(int newWeight)
@@ -77,10 +96,8 @@ namespace AI_View.Pathfinding
         public void SetAreaColor(Color color)
         {
             areaColor = color;
-            if (node.IsBlocked())
-                areaColor = color * blockedColor;
-
-            frontSprite.color = areaColor;
+            areaColor.a = areaAlpha;
+            areaSprite.color = areaColor;
         }
     }
 }

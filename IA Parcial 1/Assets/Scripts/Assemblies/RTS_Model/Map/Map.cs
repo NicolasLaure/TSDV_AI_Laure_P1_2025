@@ -11,7 +11,7 @@ namespace RTS.Model
         public MapNode hqNode;
         public Grid<MapNode> grid;
 
-        public Voronoi<MapNode> voronoi;
+        public Dictionary<Type, Voronoi<MapNode>> agentTypeToVoronoi = new Dictionary<Type, Voronoi<MapNode>>();
         private Random rnGen = new Random();
 
         private Dictionary<Mine, MapNode> mineToNode = new Dictionary<Mine, MapNode>();
@@ -25,8 +25,12 @@ namespace RTS.Model
             int hqPos = rnGen.Next(0, grid.nodes.Count);
             grid.nodes[hqPos].heldEntity = headquarters;
             hqNode = grid.nodes[hqPos];
+            hqNode.SetTileType(TileType.Hill);
+            foreach (MapNode node in grid.nodes)
+            {
+                SetTileType(node, TileType.Hill);
+            }
 
-            voronoi = new Voronoi<MapNode>(grid);
             PopulateMines(minesQty);
         }
 
@@ -96,9 +100,27 @@ namespace RTS.Model
             Bake();
         }
 
+        public void SetTileType(MapNode node, TileType type)
+        {
+            if (node == hqNode)
+                return;
+
+            node.SetTileType(type);
+        }
+
+        public void AddVoronoiMap(Type agentType)
+        {
+            agentTypeToVoronoi.Add(agentType, new Voronoi<MapNode>(grid));
+            Bake();
+        }
+
         private void Bake()
         {
-            voronoi.Bake(mineToNode.Values);
+            foreach (Voronoi<MapNode> voronoi in agentTypeToVoronoi.Values)
+            {
+                voronoi.Bake(mineToNode.Values);
+            }
+
             onBake?.Invoke();
         }
 
@@ -128,7 +150,7 @@ namespace RTS.Model
         {
             if (mineToNode.ContainsKey(entity))
                 return mineToNode[entity];
-            
+
             return null;
         }
     }

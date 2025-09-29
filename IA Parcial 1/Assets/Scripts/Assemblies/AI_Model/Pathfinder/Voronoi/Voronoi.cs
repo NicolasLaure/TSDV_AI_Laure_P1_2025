@@ -4,7 +4,7 @@ using AI_Model.Utilities;
 
 namespace AI_Model.Voronoi
 {
-    public class Voronoi<NodeType> where NodeType : INode<Vec2Int>, INode, IWeightedNode, new()
+    public class Voronoi<NodeType> where NodeType : INode<Vec2Int>, INode, new()
     {
         private Graph<NodeType> graph;
 

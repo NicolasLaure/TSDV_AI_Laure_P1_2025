@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
 using AI_Model.Utilities;
 using AI_View.Pathfinding;
 using RTS.Model;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace RTS.View
 {
@@ -23,17 +25,23 @@ namespace RTS.View
 
         private Dictionary<MapNode, GameObject> nodeToHeldGameObject = new Dictionary<MapNode, GameObject>();
 
-        public void Init(Map map)
+        private Type shownVoronoi;
+        private Dictionary<Enum, Transitability> typeToWeight;
+
+        public void Init(Map map, Type shownVoronoi, Dictionary<Enum, Transitability> typeToWeight)
         {
             this.map = map;
+            this.shownVoronoi = shownVoronoi;
+            this.typeToWeight = typeToWeight;
+
             Camera.main.transform.position =
                 new Vector3(map.grid.Width / 2 * cubeSize.x, map.grid.Height / 2 * cubeSize.y, -map.grid.Width);
-            foreach (Node<Vec2Int> node in map.grid.nodes)
+            foreach (MapNode node in map.grid.nodes)
             {
                 GameObject nodeObject =
                     Instantiate(nodePrefab, ToGridAligned(node.GetCoordinate()), Quaternion.identity);
                 NodeView nodeView = nodeObject.GetComponent<NodeView>();
-                nodeView.Init(node);
+                nodeView.Init(node, typeToWeight);
                 nodeToView.Add(node, nodeView);
                 nodeObject.transform.localScale = cubeSize;
             }
@@ -95,8 +103,8 @@ namespace RTS.View
             Destroy(nodeToHeldGameObject[mine]);
             nodeToHeldGameObject.Remove(mine);
 
-            foreach (MapNode landmark in map.voronoi.Landmarks)
-                PaintNodes(map.voronoi.GetLandmarkNodes(landmark));
+            foreach (MapNode landmark in map.agentTypeToVoronoi[shownVoronoi].Landmarks)
+                PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark));
         }
 
         public void AddHeadQuarters(MapNode hqLocation)
@@ -119,8 +127,15 @@ namespace RTS.View
 
         private void PaintVoronoiAreas()
         {
-            foreach (MapNode landmark in map.voronoi.Landmarks)
-                PaintNodes(map.voronoi.GetLandmarkNodes(landmark));
+            foreach (MapNode landmark in map.agentTypeToVoronoi[shownVoronoi].Landmarks)
+                PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark));
+        }
+
+        public void SetShownVoronoi(Type newType, Dictionary<Enum, Transitability> typeToWeight)
+        {
+            shownVoronoi = newType;
+            this.typeToWeight = typeToWeight;
+            PaintVoronoiAreas();
         }
     }
 }

@@ -8,7 +8,14 @@ namespace RTS.Model
     {
         private int inventorySize = 10;
 
-        public Convoy(Map map, MapNode startPos) : base(map, startPos)
+        public static readonly Dictionary<Enum, Transitability> typeToCost = new Dictionary<Enum, Transitability>()
+        {
+            { TileType.Hill, new Transitability(1, true) },
+            { TileType.Mountain, new Transitability(1, false) },
+            { TileType.Water, new Transitability(3, true) }
+        };
+
+        public Convoy(Map map, MapNode startPos) : base(map, startPos, typeof(Convoy), typeToCost)
         {
             inventory.size = inventorySize;
             fsm = new FSM<States, Flags>(States.Idle);

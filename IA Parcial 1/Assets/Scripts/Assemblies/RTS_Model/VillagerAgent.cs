@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using AI_Model.Pathfinding;
 
 namespace RTS.Model
 {
@@ -13,7 +15,14 @@ namespace RTS.Model
 
         public Action onFoodUpdate;
 
-        public VillagerAgent(Map map, MapNode startPos) : base(map, startPos)
+        public static readonly Dictionary<Enum, Transitability> typeToCost = new Dictionary<Enum, Transitability>()
+        {
+            { TileType.Hill, new Transitability(1, true) },
+            { TileType.Mountain, new Transitability(3, true) },
+            { TileType.Water, new Transitability(1, false) }
+        };
+
+        public VillagerAgent(Map map, MapNode startPos) : base(map, startPos, typeof(VillagerAgent), typeToCost)
         {
             fsm = new FSM<States, Flags>(States.WalkTowardsMine);
             AddStates();

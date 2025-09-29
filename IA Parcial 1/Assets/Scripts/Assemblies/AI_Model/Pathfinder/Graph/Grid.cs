@@ -4,7 +4,7 @@ using AI_Model.Utilities;
 
 namespace AI_Model.Pathfinding
 {
-    public class Grid<NodeType> : Graph<NodeType> where NodeType : INode<Vec2Int>, INode, IWeightedNode, new()
+    public class Grid<NodeType> : Graph<NodeType> where NodeType : INode<Vec2Int>, INode, new()
     {
         private int width;
         private int height;

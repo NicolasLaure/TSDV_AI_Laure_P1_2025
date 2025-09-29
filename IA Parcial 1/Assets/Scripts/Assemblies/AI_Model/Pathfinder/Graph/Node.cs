@@ -1,8 +1,11 @@
-﻿namespace AI_Model.Pathfinding
+﻿using System;
+
+namespace AI_Model.Pathfinding
 {
-    public class Node<Coordinate> : INode, IWeightedNode, INode<Coordinate>
+    public class Node<Coordinate> : INode, INode<Coordinate>
     {
         private Coordinate coordinate;
+        private Enum tileType;
         private bool isBlocked = false;
         private int weight = 0;
 
@@ -14,6 +17,16 @@
         public Coordinate GetCoordinate()
         {
             return coordinate;
+        }
+
+        public void SetTileType<EnumType>(EnumType type) where EnumType : Enum
+        {
+            tileType = type;
+        }
+
+        public EnumType GetTileType<EnumType>() where EnumType : Enum
+        {
+            return (EnumType)tileType;
         }
 
         public bool IsBlocked()

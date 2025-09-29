@@ -16,6 +16,9 @@ namespace RTS.Model
         {
             map = new Map(width, height, minesQty);
 
+            map.AddVoronoiMap(typeof(VillagerAgent));
+            map.AddVoronoiMap(typeof(Convoy));
+
             villagers.Add(new VillagerAgent(map, map.grid.GetNeighbours(map.hqNode)[0]));
             convoys.Add(new Convoy(map, map.grid.GetNeighbours(map.hqNode)[1]));
         }
@@ -24,7 +27,7 @@ namespace RTS.Model
         {
             ParallelOptions parallelOptions = new ParallelOptions();
             parallelOptions.MaxDegreeOfParallelism = 32;
-            
+
             Parallel.ForEach(villagers, parallelOptions, villager => { villager.Tick(delta); });
             Parallel.ForEach(convoys, parallelOptions, convoy => { convoy.Tick(delta); });
 

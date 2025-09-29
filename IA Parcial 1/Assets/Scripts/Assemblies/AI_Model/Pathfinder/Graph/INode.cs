@@ -1,4 +1,6 @@
-﻿namespace AI_Model.Pathfinding
+﻿using System;
+
+namespace AI_Model.Pathfinding
 {
     public interface INode
     {
@@ -10,6 +12,9 @@
     {
         public void SetCoordinate(Coordinate coordinateType);
         public Coordinate GetCoordinate();
+
+        public void SetTileType<EnumType>(EnumType type) where EnumType : Enum;
+        public EnumType GetTileType<EnumType>() where EnumType : Enum;
     }
 
     public interface IWeightedNode

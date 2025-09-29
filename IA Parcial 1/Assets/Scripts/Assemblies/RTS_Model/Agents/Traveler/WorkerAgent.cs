@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
 
@@ -47,10 +48,13 @@ namespace RTS.Model
         public Path<MapNode> currentPath = new Path<MapNode>();
         public List<MapNode> CurrentPath => currentPath.nodes;
 
-        public WorkerAgent(Map map, MapNode startPos)
+        protected Type agentType;
+
+        public WorkerAgent(Map map, MapNode startPos, Type agentType, Dictionary<Enum, Transitability> typeCost)
         {
             this.map = map;
-            pathfinder = new AStarPathfinder<MapNode>(map.grid);
+            this.agentType = agentType;
+            pathfinder = new AStarPathfinder<MapNode>(map.grid, typeCost);
             agentPosition = startPos;
             closestMineNode = FindClosestMine();
             inventory = new Inventory();
@@ -64,7 +68,10 @@ namespace RTS.Model
 
         public MapNode FindClosestMine()
         {
-            return map.voronoi.GetClosestLandMark(agentPosition);
+            if (!map.agentTypeToVoronoi.ContainsKey(agentType))
+                throw new Exception("AgentType Not Found");
+
+            return map.agentTypeToVoronoi[agentType].GetClosestLandMark(agentPosition);
         }
 
         protected abstract void AddStates();
@@ -78,6 +85,9 @@ namespace RTS.Model
         protected void GetMinePath()
         {
             closestMineNode = FindClosestMine();
+            if (closestMineNode == null)
+                throw new Exception("ClosestMine not found");
+            
             currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
             /*Debug.Log("MineReached");*/
         }
