@@ -1,5 +1,3 @@
-using UnityEditor.PackageManager;
-
 namespace RTS.Model
 {
     public class Mine : MapEntity

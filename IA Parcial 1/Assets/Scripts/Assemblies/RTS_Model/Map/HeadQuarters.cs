@@ -1,5 +1,3 @@
-using UnityEditor;
-
 namespace RTS.Model
 {
     public class HeadQuarters : MapEntity
