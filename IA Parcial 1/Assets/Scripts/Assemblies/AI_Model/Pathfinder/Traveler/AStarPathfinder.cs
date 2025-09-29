@@ -30,6 +30,9 @@ namespace AI_Model.Pathfinding
 
         public override List<NodeType> FindPath(NodeType startNode, NodeType destinationNode)
         {
+            if (startNode == null || destinationNode == null)
+                throw new Exception("Received invalid Node");
+
             Dictionary<NodeType, WeightedNode<NodeType>> openNodes = new Dictionary<NodeType, WeightedNode<NodeType>>();
 
             Logger.Log($"StartNode: {startNode.GetCoordinate()}, Target: {destinationNode.GetCoordinate()}");

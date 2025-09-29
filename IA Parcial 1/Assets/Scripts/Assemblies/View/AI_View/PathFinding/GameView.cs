@@ -43,8 +43,7 @@ public class GameView : MonoBehaviour
 
         foreach (Convoy agent in game.convoys)
         {
-            GameObject convoy = Instantiate(convoyPrefab,
-            gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            GameObject convoy = Instantiate(convoyPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             agentToTravelerView.Add(agent, convoy.GetComponent<TravelerView>());
         }
 
@@ -80,12 +79,21 @@ public class GameView : MonoBehaviour
 
     public void AddVillager()
     {
-        game.TryBuyVillager();
+        if (game.TryBuyVillager(out VillagerAgent agent))
+        {
+            GameObject villager = Instantiate(villagerPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            villager.GetComponent<VillagerView>().villagerAgent = agent;
+            agentToTravelerView.Add(agent, villager.GetComponent<TravelerView>());
+        }
     }
 
     public void AddConvoy()
     {
-        game.TryBuyConvoy();
+        if (game.TryBuyConvoy(out Convoy agent))
+        {
+            GameObject convoy = Instantiate(convoyPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            agentToTravelerView.Add(agent, convoy.GetComponent<TravelerView>());
+        }
     }
 
     public void Alert()

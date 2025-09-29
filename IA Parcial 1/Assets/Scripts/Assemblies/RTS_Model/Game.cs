@@ -31,22 +31,32 @@ namespace RTS.Model
             map.Tick();
         }
 
-        public void TryBuyVillager()
+        public bool TryBuyVillager(out VillagerAgent spawnedVillager)
         {
             if (map.headquarters.heldResources < villagerCost)
-                return;
+            {
+                spawnedVillager = null;   
+                return false;
+            }
 
             map.headquarters.heldResources -= villagerCost;
-            villagers.Add(new VillagerAgent(map, map.grid.GetNeighbours(map.hqNode)[0]));
+            spawnedVillager = new VillagerAgent(map, map.grid.GetNeighbours(map.hqNode)[0]);
+            villagers.Add(spawnedVillager);
+            return true;
         }
 
-        public void TryBuyConvoy()
+        public bool TryBuyConvoy(out Convoy spawnedConvoy)
         {
             if (map.headquarters.heldResources < convoyCost)
-                return;
+            {
+                spawnedConvoy = null;
+                return false;
+            }
 
             map.headquarters.heldResources -= convoyCost;
-            convoys.Add(new Convoy(map, map.grid.GetNeighbours(map.hqNode)[0]));
+            spawnedConvoy = new Convoy(map, map.grid.GetNeighbours(map.hqNode)[0]);
+            convoys.Add(spawnedConvoy);
+            return true;
         }
 
         public void Alert()
