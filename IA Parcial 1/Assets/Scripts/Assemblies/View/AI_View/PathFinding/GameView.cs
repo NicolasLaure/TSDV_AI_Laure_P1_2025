@@ -9,9 +9,9 @@ using UnityEngine;
 public class GameView : MonoBehaviour
 {
     [SerializeField] private RTS_MapView gridView;
+    [SerializeField] private VoronoiView voronoiView;
 
-    [Header("Input Fields")] [SerializeField]
-    private TMP_InputField width;
+    [Header("Input Fields")] [SerializeField] private TMP_InputField width;
 
     [SerializeField] private TMP_InputField height;
     [SerializeField] private TMP_InputField minesQty;
@@ -31,6 +31,7 @@ public class GameView : MonoBehaviour
     {
         game = new Game(int.Parse(width.text), int.Parse(height.text), int.Parse(minesQty.text));
         gridView.Init(game.map, typeof(VillagerAgent), VillagerAgent.typeToCost);
+        voronoiView.Init(game.map.agentTypeToVoronoi[typeof(VillagerAgent)]);
         panel.SetActive(false);
         hud.SetActive(true);
 

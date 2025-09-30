@@ -22,7 +22,7 @@ namespace AI_Model.Voronoi
         }
 
         private List<Self_Plane> _planes = new List<Self_Plane>();
-        private List<VoronoiPoint<NodeType>> _voronoiObjects;
+        public List<VoronoiPoint<NodeType>> voronoiObjects;
 
         public void Bake(ICollection<NodeType> inLandMarks)
         {
@@ -30,11 +30,11 @@ namespace AI_Model.Voronoi
             landmarks.AddRange(inLandMarks);
             landMarkToNodes.Clear();
 
-            _voronoiObjects = new List<VoronoiPoint<NodeType>>();
+            voronoiObjects = new List<VoronoiPoint<NodeType>>();
 
             for (int i = 0; i < landmarks.Count; i++)
             {
-                _voronoiObjects.Add(new VoronoiPoint<NodeType>());
+                voronoiObjects.Add(new VoronoiPoint<NodeType>());
 
                 foreach (NodeType point in landmarks)
                 {
@@ -53,13 +53,13 @@ namespace AI_Model.Voronoi
 
                     _planes.Add(newPlane);
 
-                    _voronoiObjects[i].planePositions.Add(position);
-                    _voronoiObjects[i].planes.Add(newPlane);
-                    _voronoiObjects[i].node = landmarks[i];
+                    voronoiObjects[i].planePositions.Add(position);
+                    voronoiObjects[i].planes.Add(newPlane);
+                    voronoiObjects[i].node = landmarks[i];
                 }
             }
 
-            foreach (VoronoiPoint<NodeType> point in _voronoiObjects)
+            foreach (VoronoiPoint<NodeType> point in voronoiObjects)
             {
                 CleanPlanes(point);
             }
@@ -107,7 +107,7 @@ namespace AI_Model.Voronoi
             Vec3 point = new Vec3(pointNode.GetCoordinate().X, pointNode.GetCoordinate().Y, 0.0f);
 
             bool isPointOut = false;
-            foreach (VoronoiPoint<NodeType> voronoiPoint in _voronoiObjects)
+            foreach (VoronoiPoint<NodeType> voronoiPoint in voronoiObjects)
             {
                 isPointOut = false;
                 for (int i = 0; i < voronoiPoint.planes.Count; i++)
