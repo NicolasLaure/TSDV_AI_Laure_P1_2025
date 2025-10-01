@@ -75,6 +75,9 @@ public class GameView : MonoBehaviour
 
     private void Update()
     {
+        if (game == null)
+            return;
+        
         Draw();
     }
 

@@ -1608,6 +1608,12 @@ MonoBehaviour:
   hqPrefab: {fileID: 1046227378242243737, guid: a8fe7274f2fb9c3419d723a452952259, type: 3}
   nodeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   baseMaterial: {fileID: 2100000, guid: e78459b97defad64bae59ce93475957e, type: 2}
+  mineMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  mineSize: {x: 0.65, y: 0.65, z: 1}
+  mineMaterial: {fileID: 2100000, guid: df2cf013089b9fc47b2b980754b8cc2f, type: 2}
+  hqMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  hqSize: {x: 0.8, y: 0.8, z: 1}
+  hqMaterial: {fileID: 2100000, guid: 0867b756b4e3e1341adbca549b87fcce, type: 2}
   landmarksQty: 3
 --- !u!4 &286072598
 Transform:

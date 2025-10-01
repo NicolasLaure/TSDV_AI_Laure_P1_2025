@@ -20,7 +20,17 @@ namespace RTS.View
         [SerializeField] private Mesh nodeMesh;
         [SerializeField] private Material baseMaterial;
 
-        [Header("Voronoi")] [SerializeField] private int landmarksQty;
+        [Header("Entities")]
+        [SerializeField] private Mesh mineMesh;
+        [SerializeField] private Vector3 mineSize;
+        [SerializeField] private Material mineMaterial;
+        [SerializeField] private Mesh hqMesh;
+        [SerializeField] private Vector3 hqSize;
+        [SerializeField] private Material hqMaterial;
+        private const int MAX_OBJS_PER_DRAWCALL = 1000;
+
+        [Header("Voronoi")]
+        [SerializeField] private int landmarksQty;
 
         private Map map;
         private Dictionary<INode, NodeView> nodeToView = new Dictionary<INode, NodeView>();
@@ -64,6 +74,31 @@ namespace RTS.View
             List<NodeView> entities = new List<NodeView>(nodeToView.Values);
             for (int i = 0; i < entities.Count; i++)
                 Graphics.DrawMesh(nodeMesh, Matrix4x4.TRS(entities[i].position, Quaternion.identity, cubeSize), entities[i].CurrentMaterial, 0);
+
+            Graphics.DrawMesh(hqMesh, Matrix4x4.TRS(ToEntityGridAligned(map.hqNode.GetCoordinate()), Quaternion.identity, hqSize), hqMaterial, 0);
+            DrawMines();
+        }
+
+        private void DrawMines()
+        {
+            List<MapNode> mines = map.GetMineLocations();
+            List<Matrix4x4[]> drawMatrix = new List<Matrix4x4[]>();
+            int meshes = mines.Count;
+            for (int i = 0; i < mines.Count; i += MAX_OBJS_PER_DRAWCALL)
+            {
+                drawMatrix.Add(new Matrix4x4[meshes > MAX_OBJS_PER_DRAWCALL ? MAX_OBJS_PER_DRAWCALL : meshes]);
+                meshes -= MAX_OBJS_PER_DRAWCALL;
+            }
+
+            Parallel.For(0, mines.Count, i =>
+            {
+                drawMatrix[(i / MAX_OBJS_PER_DRAWCALL)][(i % MAX_OBJS_PER_DRAWCALL)]
+                    .SetTRS(ToEntityGridAligned(mines[i].GetCoordinate()), Quaternion.identity, mineSize);
+            });
+            for (int i = 0; i < drawMatrix.Count; i++)
+            {
+                Graphics.DrawMeshInstanced(mineMesh, 0, mineMaterial, drawMatrix[i]);
+            }
         }
 
         public Vector3 ToGridAligned(Vec2Int nodePosition)
