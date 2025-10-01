@@ -11,7 +11,7 @@ namespace RTS.Model
         public MapNode hqNode;
         public Grid<MapNode> grid;
 
-        public Dictionary<Type, WeightedVoronoi<MapNode>> agentTypeToVoronoi = new Dictionary<Type, WeightedVoronoi<MapNode>>();
+        public Dictionary<Type, Voronoi<MapNode>> agentTypeToVoronoi = new Dictionary<Type, Voronoi<MapNode>>();
         private Random rnGen = new Random();
 
         private Dictionary<Mine, MapNode> mineToNode = new Dictionary<Mine, MapNode>();
@@ -113,13 +113,13 @@ namespace RTS.Model
 
         public void AddVoronoiMap(Type agentType, Dictionary<int, Transitability> typeToWeight)
         {
-            agentTypeToVoronoi.Add(agentType, new WeightedVoronoi<MapNode>(grid, typeToWeight));
+            agentTypeToVoronoi.Add(agentType, new Voronoi<MapNode>(grid));
             Bake();
         }
 
         private void Bake()
         {
-            foreach (WeightedVoronoi<MapNode> voronoi in agentTypeToVoronoi.Values)
+            foreach (Voronoi<MapNode> voronoi in agentTypeToVoronoi.Values)
             {
                 voronoi.Bake(mineToNode.Values);
             }
