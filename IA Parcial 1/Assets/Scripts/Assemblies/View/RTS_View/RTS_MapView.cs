@@ -32,7 +32,6 @@ namespace RTS.View
         private Dictionary<Enum, Transitability> typeToWeight;
 
         private Dictionary<MapNode, Material> landMarkToAreaMaterial = new Dictionary<MapNode, Material>();
-        private const int MAX_OBJS_PER_DRAWCALL = 1000;
 
         public void Init(Map map, Type shownVoronoi, Dictionary<Enum, Transitability> typeToWeight)
         {

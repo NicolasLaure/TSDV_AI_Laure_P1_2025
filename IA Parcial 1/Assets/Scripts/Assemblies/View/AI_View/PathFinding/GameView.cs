@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AI_View.Pathfinding;
 using RTS.Model;
 using RTS.View;
@@ -23,6 +24,12 @@ public class GameView : MonoBehaviour
 
     [SerializeField] private GameObject villagerPrefab;
     [SerializeField] private GameObject convoyPrefab;
+    [SerializeField] public Mesh villagerMesh;
+    [SerializeField] public Mesh convoyMesh;
+    [SerializeField] public Material villagerMaterial;
+    [SerializeField] public Material convoyMaterial;
+    private const int MAX_OBJS_PER_DRAWCALL = 1000;
+
     [SerializeField] private float tickDelay;
 
     private Dictionary<WorkerAgent, TravelerView> agentToTravelerView = new Dictionary<WorkerAgent, TravelerView>();
@@ -30,6 +37,10 @@ public class GameView : MonoBehaviour
     private Coroutine gameCoroutine;
 
     public Action<Map> onMapBuild;
+
+
+    private List<TravelerView> villagerViews = new List<TravelerView>();
+    private List<TravelerView> convoyViews = new List<TravelerView>();
 
     public void InitGame()
     {
@@ -46,12 +57,14 @@ public class GameView : MonoBehaviour
             villager.GetComponent<VillagerView>().villagerAgent = agent;
             voronoiView.AddMiner(agent);
             agentToTravelerView.Add(agent, villager.GetComponent<TravelerView>());
+            villagerViews.Add(villager.GetComponent<TravelerView>());
         }
 
         foreach (Convoy agent in game.convoys)
         {
             GameObject convoy = Instantiate(convoyPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             agentToTravelerView.Add(agent, convoy.GetComponent<TravelerView>());
+            convoyViews.Add(convoy.GetComponent<TravelerView>());
         }
 
         if (gameCoroutine != null)
@@ -93,7 +106,32 @@ public class GameView : MonoBehaviour
     private void Draw()
     {
         gridView.Draw();
+
+        Draw(villagerViews, villagerMesh, villagerMaterial);
+        Draw(convoyViews, convoyMesh, convoyMaterial);
     }
+
+    private void Draw(List<TravelerView> agents, Mesh agentMesh, Material agentMaterial)
+    {
+        List<Matrix4x4[]> drawMatrix = new List<Matrix4x4[]>();
+        int meshes = agents.Count;
+        for (int i = 0; i < agents.Count; i += MAX_OBJS_PER_DRAWCALL)
+        {
+            drawMatrix.Add(new Matrix4x4[meshes > MAX_OBJS_PER_DRAWCALL ? MAX_OBJS_PER_DRAWCALL : meshes]);
+            meshes -= MAX_OBJS_PER_DRAWCALL;
+        }
+
+        Parallel.For(0, agents.Count, i =>
+        {
+            drawMatrix[(i / MAX_OBJS_PER_DRAWCALL)][(i % MAX_OBJS_PER_DRAWCALL)]
+                .SetTRS(agents[i].position, Quaternion.identity, agents[i].scale);
+        });
+        for (int i = 0; i < drawMatrix.Count; i++)
+        {
+            Graphics.DrawMeshInstanced(agentMesh, 0, agentMaterial, drawMatrix[i]);
+        }
+    }
+
     public void AddVillager()
     {
         if (game.TryBuyVillager(out VillagerAgent agent))
@@ -101,6 +139,7 @@ public class GameView : MonoBehaviour
             GameObject villager = Instantiate(villagerPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             villager.GetComponent<VillagerView>().villagerAgent = agent;
             agentToTravelerView.Add(agent, villager.GetComponent<TravelerView>());
+            villagerViews.Add(villager.GetComponent<TravelerView>());
         }
     }
 
@@ -110,6 +149,7 @@ public class GameView : MonoBehaviour
         {
             GameObject convoy = Instantiate(convoyPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             agentToTravelerView.Add(agent, convoy.GetComponent<TravelerView>());
+            convoyViews.Add(convoy.GetComponent<TravelerView>());
         }
     }
 
