@@ -11,7 +11,7 @@ namespace RTS.Model
         public MapNode hqNode;
         public Grid<MapNode> grid;
 
-        public Dictionary<Type, Voronoi<MapNode>> agentTypeToVoronoi = new Dictionary<Type, Voronoi<MapNode>>();
+        public Dictionary<Type, WeightedVoronoi<MapNode>> agentTypeToVoronoi = new Dictionary<Type, WeightedVoronoi<MapNode>>();
         private Random rnGen = new Random();
 
         private Dictionary<Mine, MapNode> mineToNode = new Dictionary<Mine, MapNode>();
@@ -26,11 +26,13 @@ namespace RTS.Model
             //int hqPos = 14;
             grid.nodes[hqPos].heldEntity = headquarters;
             hqNode = grid.nodes[hqPos];
-            hqNode.SetTileType((int)TileType.Hill);
             foreach (MapNode node in grid.nodes)
             {
-                SetTileType(node, TileType.Hill);
+                int randomTile = rnGen.Next(0, (int)TileType.Water + 1);
+                SetTileType(node, (TileType)randomTile);
             }
+
+            hqNode.SetTileType((int)TileType.Hill);
 
             PopulateMines(minesQty);
         }
@@ -109,15 +111,15 @@ namespace RTS.Model
             node.SetTileType((int)type);
         }
 
-        public void AddVoronoiMap(Type agentType)
+        public void AddVoronoiMap(Type agentType, Dictionary<int, Transitability> typeToWeight)
         {
-            agentTypeToVoronoi.Add(agentType, new Voronoi<MapNode>(grid));
+            agentTypeToVoronoi.Add(agentType, new WeightedVoronoi<MapNode>(grid, typeToWeight));
             Bake();
         }
 
         private void Bake()
         {
-            foreach (Voronoi<MapNode> voronoi in agentTypeToVoronoi.Values)
+            foreach (WeightedVoronoi<MapNode> voronoi in agentTypeToVoronoi.Values)
             {
                 voronoi.Bake(mineToNode.Values);
             }

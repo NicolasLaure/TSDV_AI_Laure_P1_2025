@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using AI_Model.Voronoi;
 using CustomMath;
@@ -38,11 +37,10 @@ public class VoronoiView : MonoBehaviour
             {
                 GameObject planeObject = Instantiate(planePrefab, transform);
                 planeObject.transform.up = new Vector3(plane.Normal.x, plane.Normal.y, plane.Normal.z);
+                planeObject.transform.Translate(planeObject.transform.up.normalized * (plane.Distance * 0.5f));
                 voroPlanes.Add(planeObject);
             }
         }
-
-        Debug.Log($"PLANES QTY: {voroPlanes.Count}");
     }
 
     public void UpdateView(List<VillagerAgent> villagers)

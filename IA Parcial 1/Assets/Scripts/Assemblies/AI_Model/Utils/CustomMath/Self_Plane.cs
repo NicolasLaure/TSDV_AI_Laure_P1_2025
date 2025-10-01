@@ -56,6 +56,11 @@ namespace CustomMath
             return new Self_Plane(plane.normal, newPlaneDistance);
         }
 
+        public void SetDistance(float translation)
+        {
+            distance = translation;
+        }
+
         public Vec3 ClosestPointOnPlane(Vec3 point)
         {
             Vec3 normalizedNormal = normal.normalizedVec3;

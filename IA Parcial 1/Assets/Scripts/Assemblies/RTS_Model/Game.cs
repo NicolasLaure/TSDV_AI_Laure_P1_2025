@@ -16,8 +16,8 @@ namespace RTS.Model
         {
             map = new Map(width, height, minesQty);
 
-            map.AddVoronoiMap(typeof(VillagerAgent));
-            map.AddVoronoiMap(typeof(Convoy));
+            map.AddVoronoiMap(typeof(VillagerAgent), VillagerAgent.typeToCost);
+            map.AddVoronoiMap(typeof(Convoy), Convoy.typeToCost);
 
             villagers.Add(new VillagerAgent(map, map.grid.GetNeighbours(map.hqNode)[0]));
             convoys.Add(new Convoy(map, map.grid.GetNeighbours(map.hqNode)[1]));
