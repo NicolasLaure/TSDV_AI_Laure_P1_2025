@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3442414385169376081}
   m_Layer: 0
-  m_Name: Point
+  m_Name: Miner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61,7 +61,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.07, z: 0.05}
+  m_LocalScale: {x: 0.02, y: 0.05, z: 0.02}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3442414385169376081}
@@ -97,7 +97,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: df2cf013089b9fc47b2b980754b8cc2f, type: 2}
+  - {fileID: 2100000, guid: 1ebed966599fe884395af425e5fcbad6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

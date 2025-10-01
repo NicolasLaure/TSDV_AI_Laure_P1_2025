@@ -35,7 +35,7 @@ public class GameView : MonoBehaviour
     {
         game = new Game(int.Parse(width.text), int.Parse(height.text), int.Parse(minesQty.text));
         gridView.Init(game.map, typeof(VillagerAgent), VillagerAgent.typeToCost);
-        voronoiView.Init(game.map.agentTypeToVoronoi[typeof(VillagerAgent)]);
+        voronoiView.Init(game.map);
         panel.SetActive(false);
         hud.SetActive(true);
         onMapBuild?.Invoke(game.map);
@@ -44,6 +44,7 @@ public class GameView : MonoBehaviour
         {
             GameObject villager = Instantiate(villagerPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             villager.GetComponent<VillagerView>().villagerAgent = agent;
+            voronoiView.AddMiner(agent);
             agentToTravelerView.Add(agent, villager.GetComponent<TravelerView>());
         }
 
@@ -64,6 +65,7 @@ public class GameView : MonoBehaviour
         while (game != null)
         {
             game.Tick(Time.deltaTime);
+            voronoiView.UpdateView(game.villagers);
             goldText.text = $"Gold: {game.map.headquarters.heldResources}";
 
             foreach (WorkerAgent agent in agentToTravelerView.Keys)

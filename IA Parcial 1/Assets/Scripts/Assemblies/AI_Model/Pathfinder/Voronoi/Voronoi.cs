@@ -99,7 +99,8 @@ namespace AI_Model.Voronoi
 
         public NodeType GetClosestLandMark(NodeType pointNode)
         {
-            Vec3 point = MyQuaternion.Euler(pointNode.GetLatitude(),pointNode.GetLongitude(),0.0f) * Vec3.Up;
+            Vec3 point = MyQuaternion.Euler(pointNode.GetLatitude(), pointNode.GetLongitude(), 0.0f).normalized * Vec3.Up;
+            point.Normalize();
 
             bool isPointOut = false;
             foreach (VoronoiPoint<NodeType> voronoiPoint in voronoiObjects)

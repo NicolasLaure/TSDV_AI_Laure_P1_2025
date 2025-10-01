@@ -826,7 +826,7 @@ GameObject:
   - component: {fileID: 176264315}
   - component: {fileID: 176264314}
   - component: {fileID: 176264313}
-  - component: {fileID: 176264312}
+  - component: {fileID: 176264317}
   m_Layer: 0
   m_Name: Earth
   m_TagString: Untagged
@@ -834,22 +834,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &176264312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 176264311}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5811794d612dff49b10c1c1181da1ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  game: {fileID: 286072599}
-  minePrefab: {fileID: 4569275221943441395, guid: 9f41922ad239e5c408aed1f090fa817a, type: 3}
-  planePrefab: {fileID: 6271307296017862786, guid: 74f7cbf000046a54585421aa0edaafd5, type: 3}
-  quaternionPointPrefab: {fileID: 4569275221943441395, guid: da9e3de382956fc4c95fc85855f2ea0c, type: 3}
 --- !u!135 &176264313
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -939,6 +923,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &176264317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176264311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60943c3d01422d443b8b029df916eaa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 286072599}
+  minePrefab: {fileID: 4569275221943441395, guid: 9f41922ad239e5c408aed1f090fa817a, type: 3}
+  planePrefab: {fileID: 6271307296017862786, guid: 74f7cbf000046a54585421aa0edaafd5, type: 3}
+  minerPrefab: {fileID: 4569275221943441395, guid: cf50cd6057be7de4393040d04e6f93e7, type: 3}
 --- !u!1 &241998998
 GameObject:
   m_ObjectHideFlags: 0
@@ -1448,7 +1448,6 @@ GameObject:
   - component: {fileID: 286072598}
   - component: {fileID: 286072597}
   - component: {fileID: 286072599}
-  - component: {fileID: 286072600}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -1502,7 +1501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridView: {fileID: 286072597}
-  voronoiView: {fileID: 286072600}
+  voronoiView: {fileID: 176264317}
   width: {fileID: 1595838438}
   height: {fileID: 32103208}
   minesQty: {fileID: 1832542493}
@@ -1512,19 +1511,6 @@ MonoBehaviour:
   villagerPrefab: {fileID: 5169439475620610217, guid: d517605b1ce640144a8cfeead87fe0ca, type: 3}
   convoyPrefab: {fileID: 5169439475620610217, guid: bb916a8bf976f6145b9046807a1d2b4b, type: 3}
   tickDelay: 0.25
---- !u!114 &286072600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 286072596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60943c3d01422d443b8b029df916eaa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  planePrefab: {fileID: 6271307296017862786, guid: 74f7cbf000046a54585421aa0edaafd5, type: 3}
 --- !u!1 &308612193
 GameObject:
   m_ObjectHideFlags: 0

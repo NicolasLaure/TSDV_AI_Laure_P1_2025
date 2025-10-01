@@ -15,7 +15,6 @@ public class Voro3D : MonoBehaviour
     [SerializeField] private GameObject quaternionPointPrefab;
 
     private List<GameObject> mines = new List<GameObject>();
-    private List<GameObject> planes = new List<GameObject>();
 
     private void Awake()
     {
