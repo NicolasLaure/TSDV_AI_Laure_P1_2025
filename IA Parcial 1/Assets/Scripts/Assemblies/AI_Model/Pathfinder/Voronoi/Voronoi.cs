@@ -52,7 +52,7 @@ namespace AI_Model.Voronoi
                     Vec3 otherPoint = (otherRot * Vec3.Up).normalizedVec3;
 
                     Vec3 firstCross = Vec3.Cross(minePoint, otherPoint).normalizedVec3;
-                    Vec3 planeNormal = Vec3.Cross(firstCross, halfPoint).normalizedVec3;
+                    Vec3 planeNormal = Vec3.Cross(halfPoint, firstCross).normalizedVec3;
                     Self_Plane plane = new Self_Plane(planeNormal, 0);
                     voronoiObjects[i].planes.Add(plane);
                     voronoiObjects[i].node = landmarks[i];
