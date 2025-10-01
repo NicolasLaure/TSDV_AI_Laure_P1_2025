@@ -34,6 +34,7 @@ namespace AI_Model.Voronoi
             for (int i = 0; i < landmarks.Count; i++)
             {
                 voronoiObjects.Add(new VoronoiPoint<NodeType>());
+                voronoiObjects[i].node = landmarks[i];
 
                 MyQuaternion mineRotation = MyQuaternion.Euler(landmarks[i].GetLatitude(), landmarks[i].GetLongitude(), 0.0f).normalized;
 
@@ -55,7 +56,6 @@ namespace AI_Model.Voronoi
                     Vec3 planeNormal = Vec3.Cross(halfPoint, firstCross).normalizedVec3;
                     Self_Plane plane = new Self_Plane(planeNormal, 0);
                     voronoiObjects[i].planes.Add(plane);
-                    voronoiObjects[i].node = landmarks[i];
                 }
             }
         }
@@ -99,6 +99,9 @@ namespace AI_Model.Voronoi
 
         public NodeType GetClosestLandMark(NodeType pointNode)
         {
+            if (voronoiObjects.Count == 1)
+                return voronoiObjects[0].node;
+
             Vec3 point = MyQuaternion.Euler(pointNode.GetLatitude(), pointNode.GetLongitude(), 0.0f).normalized * Vec3.Up;
             point.Normalize();
 

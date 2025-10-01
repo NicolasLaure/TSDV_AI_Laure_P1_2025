@@ -21,12 +21,12 @@ namespace AI_Model.Pathfinding
 
         public override void PopulateGraph()
         {
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < height; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < width; j++)
                 {
                     NodeType node = new NodeType();
-                    node.SetCoordinate(new Vec2Int(i, j));
+                    node.SetCoordinate(new Vec2Int(j, i));
                     node.SetLatitude(GetLatitude(node));
                     node.SetLongitude(GetLongitude(node));
                     nodes.Add(node);
