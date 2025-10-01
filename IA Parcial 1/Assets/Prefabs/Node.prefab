@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8404782300689706137
 Transform:
   m_ObjectHideFlags: 0
@@ -103,7 +103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8821130871059804972
 Transform:
   m_ObjectHideFlags: 0
@@ -185,8 +185,8 @@ GameObject:
   - component: {fileID: 4420111001781322231}
   - component: {fileID: 7751800861928519065}
   - component: {fileID: 3322970575650687852}
-  - component: {fileID: 915784087919576308}
   - component: {fileID: 7041611259774977041}
+  - component: {fileID: 4301877621847666639}
   m_Layer: 0
   m_Name: Node
   m_TagString: Untagged
@@ -227,7 +227,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6585422184853366062}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -265,7 +265,30 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &915784087919576308
+--- !u!114 &7041611259774977041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6585422184853366062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55fbe0915d3ab9b4882c71d966aece0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockedMaterial: {fileID: 2100000, guid: c5ec9b33f9d8c644aad0dcc9b92f9468, type: 2}
+  pathColor: {r: 1, g: 0.87809217, b: 0, a: 1}
+  typeColors:
+  - {fileID: 2100000, guid: b8f8f6d3c1420a445a2b0c097419ef8c, type: 2}
+  - {fileID: 2100000, guid: 0be66a01bd52aa646a990420041b5cb3, type: 2}
+  - {fileID: 2100000, guid: 0af448a1c62b071468aae07910653c29, type: 2}
+  text: {fileID: 6173731760892651596}
+  frontSprite: {fileID: 2950684465687408386}
+  areaSprite: {fileID: 2767167711619186011}
+  areaAlpha: 0.6
+  position: {x: 0, y: 0, z: 0}
+--- !u!65 &4301877621847666639
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -284,30 +307,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1.053247}
-  m_Center: {x: 0, y: 0, z: -0.026623532}
---- !u!114 &7041611259774977041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6585422184853366062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55fbe0915d3ab9b4882c71d966aece0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blockedColor: {r: 1, g: 0, b: 0, a: 1}
-  pathColor: {r: 1, g: 0.87809217, b: 0, a: 1}
-  typeColors:
-  - {r: 0.49367887, g: 0.8207547, b: 0.29036134, a: 1}
-  - {r: 0.517, g: 0.517, b: 0.517, a: 1}
-  - {r: 0.0046724924, g: 0.45736602, b: 0.990566, a: 1}
-  text: {fileID: 6173731760892651596}
-  frontSprite: {fileID: 2950684465687408386}
-  areaSprite: {fileID: 2767167711619186011}
-  areaAlpha: 0.6
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8310113698882428420
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,7 +326,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8168398858082655695
 RectTransform:
   m_ObjectHideFlags: 0

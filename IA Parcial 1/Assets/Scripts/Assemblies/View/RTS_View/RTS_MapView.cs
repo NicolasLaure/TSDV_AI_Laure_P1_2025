@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AI_Model.Pathfinding;
 using AI_Model.Utilities;
 using AI_View.Pathfinding;
@@ -16,6 +17,8 @@ namespace RTS.View
         [SerializeField] private GameObject nodePrefab;
         [SerializeField] private GameObject minePrefab;
         [SerializeField] private GameObject hqPrefab;
+        [SerializeField] private Mesh nodeMesh;
+        [SerializeField] private Material baseMaterial;
 
         [Header("Voronoi")] [SerializeField] private int landmarksQty;
 
@@ -28,6 +31,9 @@ namespace RTS.View
         private Type shownVoronoi;
         private Dictionary<Enum, Transitability> typeToWeight;
 
+        private Dictionary<MapNode, Material> landMarkToAreaMaterial = new Dictionary<MapNode, Material>();
+        private const int MAX_OBJS_PER_DRAWCALL = 1000;
+
         public void Init(Map map, Type shownVoronoi, Dictionary<Enum, Transitability> typeToWeight)
         {
             this.map = map;
@@ -38,10 +44,10 @@ namespace RTS.View
                 new Vector3(map.grid.Width / 2 * cubeSize.x, map.grid.Height / 2 * cubeSize.y, -map.grid.Width);
             foreach (MapNode node in map.grid.nodes)
             {
-                GameObject nodeObject =
-                    Instantiate(nodePrefab, ToGridAligned(node.GetCoordinate()), Quaternion.identity);
+                GameObject nodeObject = Instantiate(nodePrefab, ToGridAligned(node.GetCoordinate()), Quaternion.identity);
                 NodeView nodeView = nodeObject.GetComponent<NodeView>();
                 nodeView.Init(node, typeToWeight);
+                nodeView.position = nodeObject.transform.position;
                 nodeToView.Add(node, nodeView);
                 nodeObject.transform.localScale = cubeSize;
             }
@@ -52,6 +58,13 @@ namespace RTS.View
             PaintVoronoiAreas();
             map.onMineRemove += RemoveMine;
             map.onBake += PaintVoronoiAreas;
+        }
+
+        public void Draw()
+        {
+            List<NodeView> entities = new List<NodeView>(nodeToView.Values);
+            for (int i = 0; i < entities.Count; i++)
+                Graphics.DrawMesh(nodeMesh, Matrix4x4.TRS(entities[i].position, Quaternion.identity, cubeSize), entities[i].CurrentMaterial, 0);
         }
 
         public Vector3 ToGridAligned(Vec2Int nodePosition)
@@ -66,20 +79,23 @@ namespace RTS.View
             nodePosition.Y * (cubeSize.y + GridSpacing / 2), -1.0f);
         }
 
-        public void PaintPath(List<MapNode> path, bool shouldDraw)
-        {
-            foreach (MapNode node in path)
-            {
-                nodeToView[node].SetPath(shouldDraw);
-            }
-        }
-
         public void AddMines(List<MapNode> mines)
         {
             Debug.Log($"MinesQty: {mines.Count}");
             foreach (MapNode mine in mines)
             {
                 AddMine(mine);
+                Material mat = Material.Instantiate(baseMaterial);
+                Color color = Random.ColorHSV();
+                color.a = 0.2f;
+                mat.color = color;
+                mat.enableInstancing = true;
+                landMarkToAreaMaterial.Add(mine, mat);
+            }
+
+            foreach (Material material in landMarkToAreaMaterial.Values)
+            {
+                Debug.Log($"Mat Color: {material.color}");
             }
         }
 
@@ -104,7 +120,7 @@ namespace RTS.View
             nodeToHeldGameObject.Remove(mine);
 
             foreach (MapNode landmark in map.agentTypeToVoronoi[shownVoronoi].Landmarks)
-                PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark));
+                PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark), landmark);
         }
 
         public void AddHeadQuarters(MapNode hqLocation)
@@ -115,13 +131,14 @@ namespace RTS.View
             nodeToHeldGameObject.Add(hqLocation, hqObject);
         }
 
-        private void PaintNodes(List<MapNode> nodes)
+        private void PaintNodes(List<MapNode> nodes, MapNode landMark)
         {
-            Color randomColor = Random.ColorHSV();
-            randomColor.a = 1;
             foreach (MapNode node in nodes)
             {
-                nodeToView[node].SetAreaColor(randomColor);
+                if (landMark != null && landMarkToAreaMaterial.ContainsKey(landMark))
+                    nodeToView[node].SetAreaMaterial(landMarkToAreaMaterial[landMark]);
+                else
+                    nodeToView[node].SetAreaMaterial(null);
             }
         }
 
@@ -130,7 +147,15 @@ namespace RTS.View
             map.agentTypeToVoronoi[shownVoronoi].SetLandmarkNodes();
 
             foreach (MapNode landmark in map.agentTypeToVoronoi[shownVoronoi].Landmarks)
-               PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark));
+                PaintNodes(map.agentTypeToVoronoi[shownVoronoi].GetLandmarkNodes(landmark), landmark);
+        }
+
+        public void ShowVoronoi(bool shouldShow)
+        {
+            if (shouldShow)
+                PaintVoronoiAreas();
+            else
+                PaintNodes(map.grid.nodes, null);
         }
 
         public void SetShownVoronoi(Type newType, Dictionary<Enum, Transitability> typeToWeight)

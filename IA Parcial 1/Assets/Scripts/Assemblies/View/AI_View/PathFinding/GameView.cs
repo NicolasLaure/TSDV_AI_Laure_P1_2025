@@ -60,6 +60,11 @@ public class GameView : MonoBehaviour
         gameCoroutine = StartCoroutine(GameUpdate());
     }
 
+    private void Update()
+    {
+        Draw();
+    }
+
     private IEnumerator GameUpdate()
     {
         while (game != null)
@@ -85,6 +90,10 @@ public class GameView : MonoBehaviour
         }
     }
 
+    private void Draw()
+    {
+        gridView.Draw();
+    }
     public void AddVillager()
     {
         if (game.TryBuyVillager(out VillagerAgent agent))

@@ -5,6 +5,7 @@ using RTS.Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace AI_View.Pathfinding
 {
@@ -12,19 +13,23 @@ namespace AI_View.Pathfinding
     {
         public MapNode node;
 
-        [SerializeField] private Color blockedColor;
+        [SerializeField] private Material blockedMaterial;
         [SerializeField] private Color pathColor;
-        [SerializeField] private List<Color> typeColors = new List<Color>();
+        [SerializeField] private List<Material> typeColors = new List<Material>();
         [SerializeField] private TextMeshPro text;
         [SerializeField] private SpriteRenderer frontSprite;
         [SerializeField] private SpriteRenderer areaSprite;
         [SerializeField] private float areaAlpha;
 
-        private Color prevColor;
-        private Color areaColor;
+        private Material areaMaterial;
 
         private Dictionary<Enum, Transitability> typeToWeight;
         private TileType currentType;
+
+        private Material currentMaterial;
+        public Vector3 position;
+
+        public Material CurrentMaterial => areaMaterial != null ? areaMaterial : currentMaterial;
 
         public void Init(MapNode node, Dictionary<Enum, Transitability> typeToWeight)
         {
@@ -71,9 +76,9 @@ namespace AI_View.Pathfinding
         private void UpdateMaterial()
         {
             if (node.IsBlocked())
-                frontSprite.color = blockedColor;
+                currentMaterial = blockedMaterial;
             else
-                frontSprite.color = typeColors[(int)currentType];
+                currentMaterial = typeColors[(int)currentType];
         }
 
         private void UpdateNumberText(int newWeight)
@@ -81,22 +86,9 @@ namespace AI_View.Pathfinding
             text.text = newWeight.ToString();
         }
 
-        public void SetPath(bool shouldDraw)
+        public void SetAreaMaterial(Material material)
         {
-            if (shouldDraw)
-            {
-                prevColor = frontSprite.color;
-                frontSprite.color = pathColor;
-            }
-            else
-                frontSprite.color = prevColor;
-        }
-
-        public void SetAreaColor(Color color)
-        {
-            areaColor = color;
-            areaColor.a = areaAlpha;
-            areaSprite.color = areaColor;
+            areaMaterial = material;
         }
     }
 }
