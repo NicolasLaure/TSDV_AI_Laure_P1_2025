@@ -22,8 +22,8 @@ namespace RTS.Model
         public Map(int width, int height, int minesQty)
         {
             grid = new Grid<MapNode>(width, height);
-            //int hqPos = rnGen.Next(0, grid.nodes.Count);
-            int hqPos = 14;
+            int hqPos = rnGen.Next(0, grid.nodes.Count);
+            //int hqPos = 14;
             grid.nodes[hqPos].heldEntity = headquarters;
             hqNode = grid.nodes[hqPos];
             hqNode.SetTileType(TileType.Hill);
@@ -45,11 +45,6 @@ namespace RTS.Model
             for (int i = 0; i < minesQty; i++)
                 AddRandomMine();
 
-            // int num = 74;
-            // Mine newMine = new Mine();
-            //
-            // grid.nodes[num].heldEntity =  newMine;
-            // mineToNode.Add(newMine, grid.nodes[num]);
             Bake();
         }
 

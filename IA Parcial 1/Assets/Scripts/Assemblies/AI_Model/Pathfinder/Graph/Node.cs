@@ -9,6 +9,8 @@ namespace AI_Model.Pathfinding
         private Enum tileType;
         private bool isBlocked = false;
         private int weight = 0;
+        private float latitude = 0;
+        private float longitude = 0;
 
         public void SetCoordinate(Coordinate coordinate)
         {
@@ -18,6 +20,26 @@ namespace AI_Model.Pathfinding
         public Coordinate GetCoordinate()
         {
             return coordinate;
+        }
+
+        public void SetLatitude(float lat)
+        {
+            latitude = lat;
+        }
+
+        public float GetLatitude()
+        {
+            return latitude;
+        }
+
+        public void SetLongitude(float lon)
+        {
+            longitude = lon;
+        }
+
+        public float GetLongitude()
+        {
+            return longitude;
         }
 
         public void SetTileType<EnumType>(EnumType type) where EnumType : Enum

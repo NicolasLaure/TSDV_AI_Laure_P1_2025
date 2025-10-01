@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
 using AI_Model.Utilities;
@@ -36,32 +35,28 @@ namespace AI_Model.Voronoi
             {
                 voronoiObjects.Add(new VoronoiPoint<NodeType>());
 
+                MyQuaternion mineRotation = MyQuaternion.Euler(landmarks[i].GetLatitude(), landmarks[i].GetLongitude(), 0.0f).normalized;
+
                 foreach (NodeType point in landmarks)
                 {
-                    if (landmarks[i].Equals(point))
+                    if (landmarks[i].GetCoordinate() == point.GetCoordinate())
                         continue;
 
-                    Vec3 staticPosition = new Vec3(landmarks[i].GetCoordinate().X, landmarks[i].GetCoordinate().Y, 0.0f);
-                    Vec3 pointPosition = new Vec3(point.GetCoordinate().X, point.GetCoordinate().Y, 0.0f);
+                    MyQuaternion otherRot = MyQuaternion.Euler(point.GetLatitude(), point.GetLongitude(), 0.0f).normalized;
 
-                    Vec3 dir = new Vec3((staticPosition - pointPosition).normalizedVec3);
-                    Vec3 position = Vec3.Lerp(staticPosition, pointPosition, 0.5f);
-                    position.x = MathF.Ceiling(position.x);
-                    position.y = MathF.Ceiling(position.y);
-                    
-                    Self_Plane newPlane = new Self_Plane(dir, position);
+                    MyQuaternion halfRot = MyQuaternion.Slerp(mineRotation, otherRot, 0.5f).normalized;
+                    Vec3 halfPoint = (halfRot * Vec3.Up).normalizedVec3;
 
-                    _planes.Add(newPlane);
+                    Vec3 minePoint = (mineRotation * Vec3.Up).normalizedVec3;
 
-                    voronoiObjects[i].planePositions.Add(position);
-                    voronoiObjects[i].planes.Add(newPlane);
+                    Vec3 otherPoint = (otherRot * Vec3.Up).normalizedVec3;
+
+                    Vec3 firstCross = Vec3.Cross(minePoint, otherPoint).normalizedVec3;
+                    Vec3 planeNormal = Vec3.Cross(firstCross, halfPoint).normalizedVec3;
+                    Self_Plane plane = new Self_Plane(planeNormal, 0);
+                    voronoiObjects[i].planes.Add(plane);
                     voronoiObjects[i].node = landmarks[i];
                 }
-            }
-
-            foreach (VoronoiPoint<NodeType> point in voronoiObjects)
-            {
-                CleanPlanes(point);
             }
         }
 
@@ -104,7 +99,7 @@ namespace AI_Model.Voronoi
 
         public NodeType GetClosestLandMark(NodeType pointNode)
         {
-            Vec3 point = new Vec3(pointNode.GetCoordinate().X, pointNode.GetCoordinate().Y, 0.0f);
+            Vec3 point = MyQuaternion.Euler(pointNode.GetLatitude(),pointNode.GetLongitude(),0.0f) * Vec3.Up;
 
             bool isPointOut = false;
             foreach (VoronoiPoint<NodeType> voronoiPoint in voronoiObjects)

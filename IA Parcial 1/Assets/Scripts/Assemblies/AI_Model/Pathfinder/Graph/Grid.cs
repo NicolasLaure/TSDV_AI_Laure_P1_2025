@@ -9,7 +9,6 @@ namespace AI_Model.Pathfinding
         private int width;
         private int height;
 
-
         public int Width => width;
         public int Height => height;
 
@@ -28,6 +27,8 @@ namespace AI_Model.Pathfinding
                 {
                     NodeType node = new NodeType();
                     node.SetCoordinate(new Vec2Int(i, j));
+                    node.SetLatitude(GetLatitude(node));
+                    node.SetLongitude(GetLongitude(node));
                     nodes.Add(node);
                 }
             }
@@ -51,13 +52,21 @@ namespace AI_Model.Pathfinding
                 if (MathF.Floor(i / width) > 0)
                     neighbours.Add(nodes[i - width]);
                 else
-                    neighbours.Add(nodes[i + width * (height - 1)]);
+                {
+                    int neighbourI = width - 1 - i;
+                    if (neighbourI != i)
+                        neighbours.Add(nodes[neighbourI]);
+                }
 
                 //!BottomLimit
                 if (MathF.Floor(i / width) + 1 < height)
                     neighbours.Add(nodes[i + width]);
                 else
-                    neighbours.Add(nodes[i - width * (height - 1)]);
+                {
+                    int neighbourI = width * height - 1 - (i - width * (height - 1));
+                    if (neighbourI != i)
+                        neighbours.Add(nodes[neighbourI]);
+                }
 
                 nodeToNeighbours.Add(nodes[i], neighbours);
             }
@@ -69,6 +78,16 @@ namespace AI_Model.Pathfinding
             Vec2Int bPos = B.GetCoordinate();
 
             return (int)MathF.Abs(aPos.X - bPos.X) + (int)MathF.Abs(aPos.Y - bPos.Y);
+        }
+
+        public float GetLongitude(NodeType node)
+        {
+            return 360 / width * node.GetCoordinate().X;
+        }
+
+        public float GetLatitude(NodeType node)
+        {
+            return 180 / (height + 1) * (node.GetCoordinate().Y + 1);
         }
     }
 }
