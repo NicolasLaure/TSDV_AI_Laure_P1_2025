@@ -20,16 +20,15 @@ namespace AI_Model.Voronoi
             this.graph = graph;
         }
 
-        private List<Self_Plane> _planes = new List<Self_Plane>();
-        public List<VoronoiPoint<NodeType>> voronoiObjects;
+        public List<VoronoiPoint<NodeType>> voronoiObjects = new List<VoronoiPoint<NodeType>>();
 
         public void Bake(ICollection<NodeType> inLandMarks)
         {
             landmarks.Clear();
             landmarks.AddRange(inLandMarks);
             landMarkToNodes.Clear();
+            voronoiObjects.Clear();
 
-            voronoiObjects = new List<VoronoiPoint<NodeType>>();
 
             for (int i = 0; i < landmarks.Count; i++)
             {
@@ -40,12 +39,13 @@ namespace AI_Model.Voronoi
 
                 foreach (NodeType point in landmarks)
                 {
-                    if (landmarks[i].GetCoordinate() == point.GetCoordinate())
+                    if (landmarks[i].EqualsNode(point))
                         continue;
 
                     MyQuaternion otherRot = MyQuaternion.Euler(point.GetLatitude(), point.GetLongitude(), 0.0f).normalized;
 
                     MyQuaternion halfRot = MyQuaternion.Slerp(mineRotation, otherRot, 0.5f).normalized;
+
                     Vec3 halfPoint = (halfRot * Vec3.Up).normalizedVec3;
 
                     Vec3 minePoint = (mineRotation * Vec3.Up).normalizedVec3;
@@ -55,8 +55,12 @@ namespace AI_Model.Voronoi
                     Vec3 firstCross = Vec3.Cross(minePoint, otherPoint).normalizedVec3;
                     Vec3 planeNormal = Vec3.Cross(halfPoint, firstCross).normalizedVec3;
                     Self_Plane plane = new Self_Plane(planeNormal, 0);
+
                     voronoiObjects[i].planes.Add(plane);
+                    voronoiObjects[i].planePositions.Add(halfRot * Vec3.Up);
                 }
+
+                CleanPlanes(voronoiObjects[i]);
             }
         }
 

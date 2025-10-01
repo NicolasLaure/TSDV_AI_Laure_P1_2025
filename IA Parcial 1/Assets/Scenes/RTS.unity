@@ -918,8 +918,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.49, y: 0, z: 0}
-  m_LocalScale: {x: 6.4624, y: 6.4624, z: 6.4624}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 6, y: 6, z: 6}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -939,6 +939,7 @@ MonoBehaviour:
   minePrefab: {fileID: 4569275221943441395, guid: 9f41922ad239e5c408aed1f090fa817a, type: 3}
   planePrefab: {fileID: 6271307296017862786, guid: 74f7cbf000046a54585421aa0edaafd5, type: 3}
   minerPrefab: {fileID: 4569275221943441395, guid: cf50cd6057be7de4393040d04e6f93e7, type: 3}
+  halfRotationPoint: {fileID: 4569275221943441395, guid: da9e3de382956fc4c95fc85855f2ea0c, type: 3}
 --- !u!1 &241998998
 GameObject:
   m_ObjectHideFlags: 0
