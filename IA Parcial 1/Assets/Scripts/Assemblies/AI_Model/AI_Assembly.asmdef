@@ -1,9 +1,7 @@
 {
     "name": "AI_Assembly",
     "rootNamespace": "AI",
-    "references": [
-        "GUID:cd23b527f827e3a4cb0c9ce62d712446"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

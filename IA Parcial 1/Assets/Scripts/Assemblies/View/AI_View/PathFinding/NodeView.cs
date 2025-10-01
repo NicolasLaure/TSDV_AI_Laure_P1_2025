@@ -5,7 +5,6 @@ using RTS.Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.WSA;
 
 namespace AI_View.Pathfinding
 {

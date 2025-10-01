@@ -64,7 +64,6 @@ namespace AI_Model.Pathfinding
 
         public void ToggleBlock()
         {
-            Logger.Log($"Is Blocked: {isBlocked}");
             isBlocked = !isBlocked;
         }
 

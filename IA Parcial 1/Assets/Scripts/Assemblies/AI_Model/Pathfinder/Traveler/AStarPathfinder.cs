@@ -38,7 +38,6 @@ namespace AI_Model.Pathfinding
 
             Dictionary<NodeType, WeightedNode<NodeType>> openNodes = new Dictionary<NodeType, WeightedNode<NodeType>>();
 
-            Logger.Log($"StartNode: {startNode.GetCoordinate()}, Target: {destinationNode.GetCoordinate()}");
             NodeType currentNode = startNode;
             closedNodes.Clear();
             WeightedNode<NodeType> initialWNode = new WeightedNode<NodeType>(currentNode, null, 0);
@@ -89,7 +88,6 @@ namespace AI_Model.Pathfinding
 
             if (destinationNode.IsBlocked() || !graph.nodes.Contains(currentNode))
             {
-                Logger.LogError("No Valid Path");
                 return new List<NodeType>();
             }
 
