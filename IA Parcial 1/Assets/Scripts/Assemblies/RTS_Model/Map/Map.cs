@@ -26,7 +26,7 @@ namespace RTS.Model
             //int hqPos = 14;
             grid.nodes[hqPos].heldEntity = headquarters;
             hqNode = grid.nodes[hqPos];
-            hqNode.SetTileType(TileType.Hill);
+            hqNode.SetTileType((int)TileType.Hill);
             foreach (MapNode node in grid.nodes)
             {
                 SetTileType(node, TileType.Hill);
@@ -106,7 +106,7 @@ namespace RTS.Model
             if (node == hqNode)
                 return;
 
-            node.SetTileType(type);
+            node.SetTileType((int)type);
         }
 
         public void AddVoronoiMap(Type agentType)

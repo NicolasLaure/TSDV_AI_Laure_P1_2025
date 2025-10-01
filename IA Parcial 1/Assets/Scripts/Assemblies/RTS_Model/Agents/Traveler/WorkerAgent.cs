@@ -45,16 +45,20 @@ namespace RTS.Model
         protected Map map;
 
         protected AStarPathfinder<MapNode> pathfinder;
+        protected ThetaStarPathfinder<MapNode> thetaFinder;
         public Path<MapNode> currentPath = new Path<MapNode>();
+        public Path<MapNode> currentThetaPath = new Path<MapNode>();
         public List<MapNode> CurrentPath => currentPath.nodes;
+        public List<MapNode> CurrentThetaPath => currentThetaPath.nodes;
 
         protected Type agentType;
 
-        public WorkerAgent(Map map, MapNode startPos, Type agentType, Dictionary<Enum, Transitability> typeCost)
+        public WorkerAgent(Map map, MapNode startPos, Type agentType, Dictionary<int, Transitability> typeCost)
         {
             this.map = map;
             this.agentType = agentType;
             pathfinder = new AStarPathfinder<MapNode>(map.grid, typeCost);
+            thetaFinder = new ThetaStarPathfinder<MapNode>(pathfinder);
             agentPosition = startPos;
             closestMineNode = FindClosestMine();
             inventory = new Inventory();
@@ -87,14 +91,16 @@ namespace RTS.Model
             closestMineNode = FindClosestMine();
             if (closestMineNode == null)
                 throw new Exception("ClosestMine not found");
-            
+
             currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
+            currentThetaPath.nodes = thetaFinder.FindPath(agentPosition, closestMineNode);
             /*Debug.Log("MineReached");*/
         }
 
         protected void GetHqPath()
         {
             currentPath.nodes = pathfinder.FindPath(agentPosition, map.hqNode);
+            currentThetaPath.nodes = thetaFinder.FindPath(agentPosition, map.hqNode);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace AI_Model.Pathfinding
     public class Node<Coordinate> : INode, INode<Coordinate>
     {
         private Coordinate coordinate;
-        private Enum tileType;
+        private int tileType;
         private bool isBlocked = false;
         private int weight = 0;
         private float latitude = 0;
@@ -42,14 +42,14 @@ namespace AI_Model.Pathfinding
             return longitude;
         }
 
-        public void SetTileType<EnumType>(EnumType type) where EnumType : Enum
+        public void SetTileType(int type)
         {
             tileType = type;
         }
 
-        public EnumType GetTileType<EnumType>() where EnumType : Enum
+        public int GetTileType()
         {
-            return (EnumType)tileType;
+            return tileType;
         }
 
         public bool EqualsNode(INode<Coordinate> other)

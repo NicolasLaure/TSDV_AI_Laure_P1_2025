@@ -9,9 +9,9 @@ namespace AI_Model.Pathfinding
     {
         private List<NodeType> closedNodes = new List<NodeType>();
 
-        private Dictionary<Enum, Transitability> typeToWeight;
+        private Dictionary<int, Transitability> typeToWeight;
 
-        public AStarPathfinder(Graph<NodeType> graph, Dictionary<Enum, Transitability> typeToWeight)
+        public AStarPathfinder(Graph<NodeType> graph, Dictionary<int, Transitability> typeToWeight)
         {
             this.graph = graph;
             this.typeToWeight = typeToWeight;
@@ -54,7 +54,7 @@ namespace AI_Model.Pathfinding
                         parent = openNodes[currentNode];
                     }
 
-                    int heuristic = Distance(node, destinationNode) + typeToWeight[node.GetTileType<Enum>()].weight;
+                    int heuristic = Distance(node, destinationNode) + typeToWeight[node.GetTileType()].weight;
 
                     WeightedNode<NodeType> wNode =
                         new WeightedNode<NodeType>(node, parent, acumulativeCost + heuristic);
@@ -114,7 +114,7 @@ namespace AI_Model.Pathfinding
             List<NodeType> validNeighbours = new List<NodeType>();
             foreach (NodeType nodeToCheck in graph.GetNeighbours(node))
             {
-                if (!nodeToCheck.IsBlocked() && typeToWeight[nodeToCheck.GetTileType<Enum>()].isWalkable && !closedNodes.Contains(nodeToCheck))
+                if (!nodeToCheck.IsBlocked() && typeToWeight[nodeToCheck.GetTileType()].isWalkable && !closedNodes.Contains(nodeToCheck))
                     validNeighbours.Add(nodeToCheck);
             }
 

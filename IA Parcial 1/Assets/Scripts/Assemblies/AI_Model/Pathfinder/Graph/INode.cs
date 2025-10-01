@@ -18,8 +18,8 @@ namespace AI_Model.Pathfinding
         public void SetLongitude(float lon);
         public float GetLongitude();
 
-        public void SetTileType<EnumType>(EnumType type) where EnumType : Enum;
-        public EnumType GetTileType<EnumType>() where EnumType : Enum;
+        public void SetTileType(int type);
+        public int GetTileType();
 
         public bool EqualsNode(INode<Coordinate> other);
     }

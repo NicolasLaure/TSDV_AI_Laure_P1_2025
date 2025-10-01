@@ -23,21 +23,21 @@ namespace AI_View.Pathfinding
 
         private Material areaMaterial;
 
-        private Dictionary<Enum, Transitability> typeToWeight;
-        private TileType currentType;
+        private Dictionary<int, Transitability> typeToWeight;
+        private int currentType;
 
         private Material currentMaterial;
         public Vector3 position;
 
         public Material CurrentMaterial => areaMaterial != null ? areaMaterial : currentMaterial;
 
-        public void Init(MapNode node, Dictionary<Enum, Transitability> typeToWeight)
+        public void Init(MapNode node, Dictionary<int, Transitability> typeToWeight)
         {
             this.typeToWeight = typeToWeight;
             this.node = node;
-            currentType = node.GetTileType<TileType>();
+            currentType = node.GetTileType();
             UpdateMaterial();
-            UpdateNumberText(typeToWeight[node.GetTileType<TileType>()].weight);
+            UpdateNumberText(typeToWeight[node.GetTileType()].weight);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -46,14 +46,14 @@ namespace AI_View.Pathfinding
 
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                currentType = (TileType)(enumInt + 1 < Enum.GetValues(typeof(TileType)).Length ? enumInt + 1 : 0);
+                currentType = enumInt + 1 < Enum.GetValues(typeof(TileType)).Length ? enumInt + 1 : 0;
                 node.SetTileType(currentType);
                 //UpdateWeight();
                 UpdateMaterial();
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                currentType = (TileType)(enumInt - 1 > 0 ? enumInt - 1 : Enum.GetValues(typeof(TileType)).Length - 1);
+                currentType = enumInt - 1 > 0 ? enumInt - 1 : Enum.GetValues(typeof(TileType)).Length - 1;
                 node.SetTileType(currentType);
                 //UpdateWeight();
                 UpdateMaterial();
@@ -64,7 +64,7 @@ namespace AI_View.Pathfinding
 
         private void UpdateWeight()
         {
-            UpdateNumberText(typeToWeight[node.GetTileType<TileType>()].weight);
+            UpdateNumberText(typeToWeight[node.GetTileType()].weight);
         }
 
         private void ToggleBlock()

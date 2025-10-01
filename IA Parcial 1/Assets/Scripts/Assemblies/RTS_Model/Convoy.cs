@@ -8,11 +8,11 @@ namespace RTS.Model
     {
         private int inventorySize = 10;
 
-        public static readonly Dictionary<Enum, Transitability> typeToCost = new Dictionary<Enum, Transitability>()
+        public static readonly Dictionary<int, Transitability> typeToCost = new Dictionary<int, Transitability>()
         {
-            { TileType.Hill, new Transitability(1, true) },
-            { TileType.Mountain, new Transitability(1, false) },
-            { TileType.Water, new Transitability(3, true) }
+            { (int)TileType.Hill, new Transitability(1, true) },
+            { (int)TileType.Mountain, new Transitability(1, false) },
+            { (int)TileType.Water, new Transitability(3, true) }
         };
 
         public Convoy(Map map, MapNode startPos) : base(map, startPos, typeof(Convoy), typeToCost)
@@ -57,7 +57,11 @@ namespace RTS.Model
         protected override void AddTransitions()
         {
             fsm.SetTransition(States.Idle, Flags.OnMineEmpty, States.WalkTowardsMine,
-            () => { currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode); });
+            () =>
+            {
+                currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
+              //  currentThetaPath.nodes = thetaFinder.FindPath(agentPosition, closestMineNode);
+            });
 
             fsm.SetTransition(States.WalkTowardsMine, Flags.OnTargetReach, States.Unload,
             () =>
@@ -81,11 +85,7 @@ namespace RTS.Model
             });
 
             fsm.SetTransition(States.Unload, Flags.OnBagEmpty, States.WalkTowardsBase,
-            () =>
-            {
-                currentPath.nodes = pathfinder.FindPath(agentPosition, map.hqNode);
-                /*Debug.Log("Bag Empty Returning to mine");*/
-            });
+            GetHqPath);
 
             //Alert
             fsm.SetTransition(States.Work, Flags.OnAlert, States.SeekShelter, GetHqPath);

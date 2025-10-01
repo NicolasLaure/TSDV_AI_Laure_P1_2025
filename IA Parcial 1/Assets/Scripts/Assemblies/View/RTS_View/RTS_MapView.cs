@@ -39,11 +39,11 @@ namespace RTS.View
         private Dictionary<MapNode, GameObject> nodeToHeldGameObject = new Dictionary<MapNode, GameObject>();
 
         private Type shownVoronoi;
-        private Dictionary<Enum, Transitability> typeToWeight;
+        private Dictionary<int, Transitability> typeToWeight;
 
         private Dictionary<MapNode, Material> landMarkToAreaMaterial = new Dictionary<MapNode, Material>();
 
-        public void Init(Map map, Type shownVoronoi, Dictionary<Enum, Transitability> typeToWeight)
+        public void Init(Map map, Type shownVoronoi, Dictionary<int, Transitability> typeToWeight)
         {
             this.map = map;
             this.shownVoronoi = shownVoronoi;
@@ -192,7 +192,7 @@ namespace RTS.View
                 PaintNodes(map.grid.nodes, null);
         }
 
-        public void SetShownVoronoi(Type newType, Dictionary<Enum, Transitability> typeToWeight)
+        public void SetShownVoronoi(Type newType, Dictionary<int, Transitability> typeToWeight)
         {
             shownVoronoi = newType;
             this.typeToWeight = typeToWeight;

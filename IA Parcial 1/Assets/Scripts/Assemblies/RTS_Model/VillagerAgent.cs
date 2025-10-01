@@ -15,11 +15,11 @@ namespace RTS.Model
 
         public Action onFoodUpdate;
 
-        public static readonly Dictionary<Enum, Transitability> typeToCost = new Dictionary<Enum, Transitability>()
+        public static readonly Dictionary<int, Transitability> typeToCost = new Dictionary<int, Transitability>()
         {
-            { TileType.Hill, new Transitability(1, true) },
-            { TileType.Mountain, new Transitability(3, true) },
-            { TileType.Water, new Transitability(1, false) }
+            { (int)TileType.Hill, new Transitability(1, true) },
+            { (int)TileType.Mountain, new Transitability(3, true) },
+            { (int)TileType.Water, new Transitability(1, false) }
         };
 
         public VillagerAgent(Map map, MapNode startPos) : base(map, startPos, typeof(VillagerAgent), typeToCost)
@@ -27,8 +27,7 @@ namespace RTS.Model
             fsm = new FSM<States, Flags>(States.WalkTowardsMine);
             AddStates();
             AddTransitions();
-            closestMineNode = FindClosestMine();
-            currentPath.nodes = pathfinder.FindPath(agentPosition, closestMineNode);
+            GetMinePath();
             fsm.Init();
         }
 
