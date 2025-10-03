@@ -18,6 +18,9 @@ public class GameView : MonoBehaviour
 
     [SerializeField] private TMP_InputField height;
     [SerializeField] private TMP_InputField minesQty;
+    [SerializeField] private Vector3 cubeSize;
+    [SerializeField] private float gridSpacing;
+
     [SerializeField] private GameObject panel;
     [SerializeField] private GameObject hud;
     [SerializeField] private TextMeshProUGUI goldText;
@@ -44,8 +47,9 @@ public class GameView : MonoBehaviour
 
     public void InitGame()
     {
-        game = new Game(int.Parse(width.text), int.Parse(height.text), int.Parse(minesQty.text));
-        gridView.Init(game.map, typeof(VillagerAgent), VillagerAgent.typeToCost);
+        game = new Game(int.Parse(width.text), int.Parse(height.text), cubeSize.x, gridSpacing,
+            int.Parse(minesQty.text));
+        gridView.Init(game.map, typeof(VillagerAgent), VillagerAgent.typeToCost, cubeSize, gridSpacing);
         voronoiView.Init(game.map);
         panel.SetActive(false);
         hud.SetActive(true);
@@ -53,7 +57,8 @@ public class GameView : MonoBehaviour
 
         foreach (VillagerAgent agent in game.villagers)
         {
-            GameObject villager = Instantiate(villagerPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            GameObject villager = Instantiate(villagerPrefab,
+                gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             villager.GetComponent<VillagerView>().villagerAgent = agent;
             voronoiView.AddMiner(agent);
             agentToTravelerView.Add(agent, villager.GetComponent<TravelerView>());
@@ -62,7 +67,8 @@ public class GameView : MonoBehaviour
 
         foreach (Convoy agent in game.convoys)
         {
-            GameObject convoy = Instantiate(convoyPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            GameObject convoy = Instantiate(convoyPrefab,
+                gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             agentToTravelerView.Add(agent, convoy.GetComponent<TravelerView>());
             convoyViews.Add(convoy.GetComponent<TravelerView>());
         }
@@ -93,11 +99,13 @@ public class GameView : MonoBehaviour
             {
                 if ((agent as VillagerAgent) != null)
                 {
-                    Debug.Log($"Worker Food: {((VillagerAgent)agent).CurrentFood}, heldResources: {agent.inventory.heldResources}");
-                    Debug.Log($"AStar NodesQty:{agent.CurrentPath.Count}, ThetaStar Nodes Qty: {agent.CurrentThetaPath.Count}");
+                    Debug.Log(
+                        $"Worker Food: {((VillagerAgent)agent).CurrentFood}, heldResources: {agent.inventory.heldResources}");
+                    Debug.Log(
+                        $"AStar NodesQty:{agent.CurrentPath.Count}, ThetaStar Nodes Qty: {agent.CurrentThetaPath.Count}");
                 }
 
-                agentToTravelerView[agent].SetPosition(gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()));
+                agentToTravelerView[agent].SetPosition(new Vector3(agent.transform.Position.x, agent.transform.Position.y, 0));
             }
 
             foreach (Mine mine in game.map.GetMines())
@@ -142,7 +150,8 @@ public class GameView : MonoBehaviour
     {
         if (game.TryBuyVillager(out VillagerAgent agent))
         {
-            GameObject villager = Instantiate(villagerPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            GameObject villager = Instantiate(villagerPrefab,
+                gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             villager.GetComponent<VillagerView>().villagerAgent = agent;
             agentToTravelerView.Add(agent, villager.GetComponent<TravelerView>());
             villagerViews.Add(villager.GetComponent<TravelerView>());
@@ -153,7 +162,8 @@ public class GameView : MonoBehaviour
     {
         if (game.TryBuyConvoy(out Convoy agent))
         {
-            GameObject convoy = Instantiate(convoyPrefab, gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
+            GameObject convoy = Instantiate(convoyPrefab,
+                gridView.ToEntityGridAligned(agent.agentPosition.GetCoordinate()), Quaternion.identity);
             agentToTravelerView.Add(agent, convoy.GetComponent<TravelerView>());
             convoyViews.Add(convoy.GetComponent<TravelerView>());
         }

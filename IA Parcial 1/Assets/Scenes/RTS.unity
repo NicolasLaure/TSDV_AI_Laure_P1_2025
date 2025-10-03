@@ -1601,8 +1601,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9505ac3f90de150418590939da61c3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeSize: {x: 1.25, y: 1.25, z: 1}
-  GridSpacing: 0.25
   nodePrefab: {fileID: 6585422184853366062, guid: 3b170d845f69ee9489deeff2b1e366da, type: 3}
   minePrefab: {fileID: 1046227378242243737, guid: 401dc54e69990f74faccf21aa03ad1bb, type: 3}
   hqPrefab: {fileID: 1046227378242243737, guid: a8fe7274f2fb9c3419d723a452952259, type: 3}
@@ -1647,6 +1645,8 @@ MonoBehaviour:
   width: {fileID: 1595838438}
   height: {fileID: 32103208}
   minesQty: {fileID: 1832542493}
+  cubeSize: {x: 1.25, y: 1.25, z: 1}
+  gridSpacing: 0.25
   panel: {fileID: 1542118792}
   hud: {fileID: 29997923}
   goldText: {fileID: 270622227}

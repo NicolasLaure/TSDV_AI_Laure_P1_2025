@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AI_Model.Pathfinding;
+using CustomMath;
 
 namespace RTS.Model
 {
@@ -31,6 +32,7 @@ namespace RTS.Model
         public MapNode closestMineNode;
 
         public MapNode agentPosition;
+        public MyTransform transform;
 
         public readonly float speed;
         public readonly float miningSpeed;
@@ -57,6 +59,7 @@ namespace RTS.Model
         {
             this.map = map;
             this.agentType = agentType;
+            transform = new MyTransform("Agent");
             pathfinder = new AStarPathfinder<MapNode>(map.grid, typeCost);
             thetaFinder = new ThetaStarPathfinder<MapNode>(pathfinder);
             agentPosition = startPos;

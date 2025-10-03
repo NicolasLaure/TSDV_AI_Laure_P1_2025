@@ -1,79 +1,87 @@
 using System.Collections.Generic;
+using AI_Model.Pathfinding;
+using AI_Model.Utilities;
 using CustomMath;
 
 namespace AI_Model.Flocking
 {
-    public class FlockingManager
+    public class Flocking<NodeType> where NodeType : INode<Vec2Int>, INode, new()
     {
-        private List<IFlockeable<Vec3>> agents = new List<IFlockeable<Vec3>>();
+        private List<IFlockeable<NodeType>> agents = new List<IFlockeable<NodeType>>();
+        private Grid<NodeType> grid;
 
-        private FlockingManager(List<IFlockeable<Vec3>> agents)
+        public Flocking(List<IFlockeable<NodeType>> agents, Grid<NodeType> grid)
         {
+            this.grid = grid;
             this.agents = agents;
-            foreach (IFlockeable<Vec3> agent in agents)
+            foreach (IFlockeable<NodeType> agent in agents)
             {
                 agent.Init(Alignment, Cohesion, Separation, Direction);
             }
         }
 
-        public Vec3 Alignment(IFlockeable<Vec3> agent)
+        public Vec3 Alignment(IFlockeable<NodeType> agent)
         {
-            var neighbors = GetBoidsInsideRadius(agent);
+            List<IFlockeable<NodeType>> neighbors = GetBoidsInsideRadius(agent);
             if (neighbors.Count == 0)
-                return new Vec3(0, 0);
+                return Vec3.Zero;
 
-            Vec3 avg = new Vec3(0, 0);
-            foreach (IFlockeable<Vec3> b in neighbors)
+            Vec3 avg = Vec3.Zero;
+            foreach (IFlockeable<NodeType> b in neighbors)
             {
-                avg += b.GetCoordinate();
+                avg += b.GetTransform().forward;
             }
 
             return (avg / neighbors.Count).normalizedVec3;
         }
 
-        public Vec3 Cohesion(IFlockeable<Vec3> agent)
+        public Vec3 Cohesion(IFlockeable<NodeType> agent)
         {
-            var neighbors = GetBoidsInsideRadius(agent);
+            List<IFlockeable<NodeType>> neighbors = GetBoidsInsideRadius(agent);
             if (neighbors.Count == 0)
                 return Vec3.Zero;
 
             Vec3 avg = Vec3.Zero;
-            foreach (IFlockeable<Vec3> b in neighbors)
+            foreach (IFlockeable<NodeType> b in neighbors)
             {
-                avg += b.GetCoordinate();
+                avg += b.GetTransform().Position;
             }
 
             avg /= neighbors.Count;
-            return (avg - agent.GetCoordinate().normalizedVec3);
+            return (avg - agent.GetCoordinate()).normalizedVec3;
         }
 
-        public Vec3 Separation(IFlockeable<Vec3> agent)
+        public Vec3 Separation(IFlockeable<NodeType> agent)
         {
-            var neighbors = GetBoidsInsideRadius(agent);
+            List<IFlockeable<NodeType>> neighbors = GetBoidsInsideRadius(agent);
+
             if (neighbors.Count == 0)
                 return Vec3.Zero;
 
             Vec3 avg = Vec3.Zero;
-            foreach (IFlockeable<Vec3> b in neighbors)
+            foreach (IFlockeable<NodeType> b in neighbors)
             {
-                avg += agent.GetCoordinate() - b.GetCoordinate();
+                avg += agent.GetTransform().Position - b.GetTransform().Position;
             }
 
             return (avg / neighbors.Count).normalizedVec3;
         }
 
-        public Vec3 Direction(IFlockeable<Vec3> agent)
+        public Vec3 Direction(IFlockeable<NodeType> agent)
         {
-            return agent.GetDir().normalizedVec3;
+            Vec3 position = agent.GetTransform().Position;
+            Vec2Int nextPosition = agent.GetNextPosition().GetCoordinate();
+
+            return (new Vec3(nextPosition.X, nextPosition.Y, 0) - position).normalizedVec3;
         }
 
-        public List<IFlockeable<Vec3>> GetBoidsInsideRadius(IFlockeable<Vec3> agent)
+        public List<IFlockeable<NodeType>> GetBoidsInsideRadius(IFlockeable<NodeType> agent)
         {
-            List<IFlockeable<Vec3>> insideRadiusBoids = new List<IFlockeable<Vec3>>();
+            List<IFlockeable<NodeType>> insideRadiusBoids = new List<IFlockeable<NodeType>>();
 
-            foreach (IFlockeable<Vec3> b in agents)
+            foreach (IFlockeable<NodeType> b in agents)
             {
-                if (Vec3.Distance(agent.GetCoordinate(), b.GetCoordinate()) < agent.GetDetectionRadius())
+                if (Vec3.Distance(agent.GetTransform().Position, b.GetTransform().Position) < agent.GetDetectionRadius())
                 {
                     insideRadiusBoids.Add(b);
                 }

@@ -12,16 +12,13 @@ namespace RTS.View
 {
     public class RTS_MapView : MonoBehaviour
     {
-        [SerializeField] private Vector3 cubeSize;
-        [SerializeField] private float GridSpacing;
         [SerializeField] private GameObject nodePrefab;
         [SerializeField] private GameObject minePrefab;
         [SerializeField] private GameObject hqPrefab;
         [SerializeField] private Mesh nodeMesh;
         [SerializeField] private Material baseMaterial;
 
-        [Header("Entities")]
-        [SerializeField] private Mesh mineMesh;
+        [Header("Entities")] [SerializeField] private Mesh mineMesh;
         [SerializeField] private Vector3 mineSize;
         [SerializeField] private Material mineMaterial;
         [SerializeField] private Mesh hqMesh;
@@ -29,8 +26,7 @@ namespace RTS.View
         [SerializeField] private Material hqMaterial;
         private const int MAX_OBJS_PER_DRAWCALL = 1000;
 
-        [Header("Voronoi")]
-        [SerializeField] private int landmarksQty;
+        [Header("Voronoi")] [SerializeField] private int landmarksQty;
 
         private Map map;
         private Dictionary<INode, NodeView> nodeToView = new Dictionary<INode, NodeView>();
@@ -43,8 +39,14 @@ namespace RTS.View
 
         private Dictionary<MapNode, Material> landMarkToAreaMaterial = new Dictionary<MapNode, Material>();
 
-        public void Init(Map map, Type shownVoronoi, Dictionary<int, Transitability> typeToWeight)
+        private Vector3 cubeSize;
+        private float gridSpacing;
+
+        public void Init(Map map, Type shownVoronoi, Dictionary<int, Transitability> typeToWeight, Vector3 cubeSize,
+            float gridSpacing)
         {
+            this.cubeSize = cubeSize;
+            this.gridSpacing = gridSpacing;
             this.map = map;
             this.shownVoronoi = shownVoronoi;
             this.typeToWeight = typeToWeight;
@@ -53,7 +55,8 @@ namespace RTS.View
                 new Vector3(map.grid.Width / 2 * cubeSize.x, map.grid.Height / 2 * cubeSize.y, -map.grid.Width);
             foreach (MapNode node in map.grid.nodes)
             {
-                GameObject nodeObject = Instantiate(nodePrefab, ToGridAligned(node.GetCoordinate()), Quaternion.identity);
+                GameObject nodeObject =
+                    Instantiate(nodePrefab, ToGridAligned(node.GetCoordinate()), Quaternion.identity);
                 NodeView nodeView = nodeObject.GetComponent<NodeView>();
                 nodeView.Init(node, typeToWeight);
                 nodeView.position = nodeObject.transform.position;
@@ -73,9 +76,12 @@ namespace RTS.View
         {
             List<NodeView> entities = new List<NodeView>(nodeToView.Values);
             for (int i = 0; i < entities.Count; i++)
-                Graphics.DrawMesh(nodeMesh, Matrix4x4.TRS(entities[i].position, Quaternion.identity, cubeSize), entities[i].CurrentMaterial, 0);
+                Graphics.DrawMesh(nodeMesh, Matrix4x4.TRS(entities[i].position, Quaternion.identity, cubeSize),
+                    entities[i].CurrentMaterial, 0);
 
-            Graphics.DrawMesh(hqMesh, Matrix4x4.TRS(ToEntityGridAligned(map.hqNode.GetCoordinate()), Quaternion.identity, hqSize), hqMaterial, 0);
+            Graphics.DrawMesh(hqMesh,
+                Matrix4x4.TRS(ToEntityGridAligned(map.hqNode.GetCoordinate()), Quaternion.identity, hqSize), hqMaterial,
+                0);
             DrawMines();
         }
 
@@ -103,14 +109,14 @@ namespace RTS.View
 
         public Vector3 ToGridAligned(Vec2Int nodePosition)
         {
-            return new Vector3(nodePosition.X * (cubeSize.x + GridSpacing / 2),
-            nodePosition.Y * (cubeSize.y + GridSpacing / 2));
+            return new Vector3(nodePosition.X * (cubeSize.x + gridSpacing / 2),
+                nodePosition.Y * (cubeSize.y + gridSpacing / 2));
         }
 
         public Vector3 ToEntityGridAligned(Vec2Int nodePosition)
         {
-            return new Vector3(nodePosition.X * (cubeSize.x + GridSpacing / 2),
-            nodePosition.Y * (cubeSize.y + GridSpacing / 2), -1.0f);
+            return new Vector3(nodePosition.X * (cubeSize.x + gridSpacing / 2),
+                nodePosition.Y * (cubeSize.y + gridSpacing / 2), -1.0f);
         }
 
         public void AddMines(List<MapNode> mines)

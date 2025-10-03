@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using AI_Model.Utilities;
+using CustomMath;
 
 namespace AI_Model.Pathfinding
 {
@@ -8,14 +10,18 @@ namespace AI_Model.Pathfinding
     {
         private int width;
         private int height;
+        public float nodeSize;
+        private float nodeSpacing;
 
         public int Width => width;
         public int Height => height;
 
-        public Grid(int x, int y)
+        public Grid(int x, int y, float nodeSize, float nodeSpacing)
         {
             width = x;
             height = y;
+            this.nodeSize = nodeSize;
+            this.nodeSpacing = nodeSpacing;
             PopulateGraph();
         }
 
@@ -88,6 +94,21 @@ namespace AI_Model.Pathfinding
         public float GetLatitude(NodeType node)
         {
             return 180 / (height + 1) * (node.GetCoordinate().Y + 1);
+        }
+
+        public Vec3 ToGridAligned(Vec2Int nodePosition)
+        {
+            float offset = nodeSize + nodeSpacing / 2;
+            return new Vec3(nodePosition.X * offset,
+                nodePosition.Y * offset);
+        }
+
+        public Vec3 ToEntityGridAligned(Vec2Int nodePosition)
+        {
+            float offset = nodeSize + nodeSpacing / 2;
+
+            return new Vec3(nodePosition.X * offset,
+                nodePosition.Y * offset, -1.0f);
         }
     }
 }

@@ -5,7 +5,7 @@ using AI_Model.Voronoi;
 
 namespace RTS.Model
 {
-    public class Map
+    public sealed class Map
     {
         public HeadQuarters headquarters = new HeadQuarters();
         public MapNode hqNode;
@@ -19,17 +19,16 @@ namespace RTS.Model
         public Action<MapNode> onMineRemove;
         public Action onBake;
 
-        public Map(int width, int height, int minesQty)
+        public Map(int width, int height, float nodeSize, float nodeSpacing, int minesQty)
         {
-            grid = new Grid<MapNode>(width, height);
+            grid = new Grid<MapNode>(width, height, nodeSize, nodeSpacing);
             int hqPos = rnGen.Next(0, grid.nodes.Count);
             //int hqPos = 14;
             grid.nodes[hqPos].heldEntity = headquarters;
             hqNode = grid.nodes[hqPos];
             foreach (MapNode node in grid.nodes)
             {
-                int randomTile = rnGen.Next(0, (int)TileType.Water + 1);
-                SetTileType(node, (TileType)randomTile);
+                SetTileType(node, TileType.Hill);
             }
 
             hqNode.SetTileType((int)TileType.Hill);
